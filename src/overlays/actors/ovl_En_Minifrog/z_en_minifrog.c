@@ -80,7 +80,7 @@ static InitChainEntry sInitChain[] = {
 
 void EnMinifrog_Init(Actor* thisx, PlayState* play) {
     EnMinifrog* this = THIS;
-    s32 i;
+    int i;
 
     Actor_ProcessInitChain(&this->actor, sInitChain);
     ActorShape_Init(&this->actor.shape, 0.0f, ActorShadow_DrawCircle, 15.0f);
@@ -107,7 +107,6 @@ void EnMinifrog_Init(Actor* thisx, PlayState* play) {
     this->flags = 0;
     this->timer = 0;
 
-    //! FAKE:
     if (1) {}
 
     if (!EN_FROG_IS_RETURNED(&this->actor)) {
@@ -324,7 +323,7 @@ void EnMinifrog_Idle(EnMinifrog* this, PlayState* play) {
     EnMinifrog_TurnToPlayer(this);
     EnMinifrog_Jump(this);
     EnMinifrog_JumpTimer(this);
-    if (Actor_TalkOfferAccepted(&this->actor, &play->state)) {
+    if (Actor_ProcessTalkRequest(&this->actor, &play->state)) {
         this->actionFunc = EnMinifrog_ReturnFrogCutscene;
         if (this->actor.csId != CS_ID_NONE) {
             this->flags |= 1;
@@ -472,7 +471,7 @@ void EnMinifrog_BeginChoirCutscene(EnMinifrog* this, PlayState* play) {
 void EnMinifrog_EndChoir(EnMinifrog* this, PlayState* play) {
     EnMinifrog_TurnToPlayer(this);
     EnMinifrog_Jump(this);
-    if (Actor_TalkOfferAccepted(&this->actor, &play->state)) {
+    if (Actor_ProcessTalkRequest(&this->actor, &play->state)) {
         Message_StartTextbox(play, 0xD7E, &this->actor);
         this->actionFunc = EnMinifrog_YellowFrogDialog;
     } else {
@@ -576,7 +575,7 @@ void EnMinifrog_SetupYellowFrogDialog(EnMinifrog* this, PlayState* play) {
     EnMinifrog_TurnToPlayer(this);
     EnMinifrog_Jump(this);
     EnMinifrog_JumpTimer(this);
-    if (Actor_TalkOfferAccepted(&this->actor, &play->state)) {
+    if (Actor_ProcessTalkRequest(&this->actor, &play->state)) {
         this->actionFunc = EnMinifrog_YellowFrogDialog;
         if (!CHECK_WEEKEVENTREG(WEEKEVENTREG_34_01)) {
             Message_StartTextbox(play, 0xD76, &this->actor);

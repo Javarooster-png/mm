@@ -1314,14 +1314,14 @@ f32 Actor_HeightDiff(Actor* actor1, Actor* actor2) {
 }
 
 /**
- * Calculates and sets the control stick x/y values and writes these to input.
+ * Sets the current and new inputs.
  */
-void Actor_SetControlStickData(PlayState* play, Input* input, f32 controlStickMagnitude, s16 controlStickAngle) {
-    s16 relativeAngle = controlStickAngle - Camera_GetInputDirYaw(GET_ACTIVE_CAM(play));
+void func_800B6F20(PlayState* play, Input* input, f32 magnitude, s16 baseYaw) {
+    s16 relativeYaw = baseYaw - Camera_GetInputDirYaw(GET_ACTIVE_CAM(play));
 
-    input->cur.stick_x = -Math_SinS(relativeAngle) * controlStickMagnitude;
+    input->cur.stick_x = -Math_SinS(relativeYaw) * magnitude;
     input->rel.stick_x = input->cur.stick_x;
-    input->cur.stick_y = Math_CosS(relativeAngle) * controlStickMagnitude;
+    input->cur.stick_y = Math_CosS(relativeYaw) * magnitude;
     input->rel.stick_y = input->cur.stick_y;
 }
 
@@ -1363,21 +1363,21 @@ f32 Player_GetRunSpeedLimit(Player* player) {
     }
 }
 
-bool func_800B7118(Player* player) {
+s32 func_800B7118(Player* player) {
     return player->stateFlags1 & PLAYER_STATE1_8;
 }
 
-bool func_800B7128(Player* player) {
+s32 func_800B7128(Player* player) {
     return func_800B7118(player) && (player->unk_ACC != 0);
 }
 
-bool func_800B715C(PlayState* play) {
+s32 func_800B715C(PlayState* play) {
     Player* player = GET_PLAYER(play);
 
     return player->stateFlags2 & PLAYER_STATE2_8;
 }
 
-void Player_SetCameraHorseSetting(PlayState* play, Player* player) {
+void Actor_SetCameraHorseSetting(PlayState* play, Player* player) {
     if ((play->roomCtx.curRoom.behaviorType1 != ROOM_BEHAVIOR_TYPE1_4) && (player->actor.id == ACTOR_PLAYER)) {
         EnHorse* rideActor = (EnHorse*)player->rideActor;
 
@@ -1387,18 +1387,18 @@ void Player_SetCameraHorseSetting(PlayState* play, Player* player) {
     }
 }
 
-void Player_MountHorse(PlayState* play, Player* player, Actor* horse) {
+void Actor_MountHorse(PlayState* play, Player* player, Actor* horse) {
     player->rideActor = horse;
     player->stateFlags1 |= PLAYER_STATE1_800000;
     horse->child = &player->actor;
 }
 
-bool func_800B7200(Player* player) {
+s32 func_800B7200(Player* player) {
     return (player->stateFlags1 & (PLAYER_STATE1_80 | PLAYER_STATE1_20000000)) ||
            (player->csAction != PLAYER_CSACTION_NONE);
 }
 
-void Player_SpawnHorse(PlayState* play, Player* player) {
+void Actor_SpawnHorse(PlayState* play, Player* player) {
     Horse_Spawn(play, player);
 }
 
@@ -1934,16 +1934,9 @@ s16 D_801AED48[] = {
         HALFDAYBIT_DAY4_NIGHT,
 };
 
-/**
- * When a given talk offer is accepted, Player will set `ACTOR_FLAG_TALK` for that actor.
- * This function serves to acknowledge that the offer was accepted by Player, and notifies the actor
- * that it should proceed with its own internal processes for handling dialogue.
- *
- * @return  true if the talk offer was accepted, false otherwise
- */
-s32 Actor_TalkOfferAccepted(Actor* actor, GameState* gameState) {
-    if (actor->flags & ACTOR_FLAG_TALK) {
-        actor->flags &= ~ACTOR_FLAG_TALK;
+s32 Actor_ProcessTalkRequest(Actor* actor, GameState* gameState) {
+    if (actor->flags & ACTOR_FLAG_TALK_REQUESTED) {
+        actor->flags &= ~ACTOR_FLAG_TALK_REQUESTED;
         return true;
     }
 
@@ -1980,7 +1973,8 @@ s32 Actor_OfferTalkExchange(Actor* actor, PlayState* play, f32 xzRange, f32 yRan
                             PlayerItemAction exchangeItemAction) {
     Player* player = GET_PLAYER(play);
 
-    if ((player->actor.flags & ACTOR_FLAG_TALK) || ((exchangeItemAction > PLAYER_IA_NONE) && Player_InCsMode(play)) ||
+    if ((player->actor.flags & ACTOR_FLAG_TALK_REQUESTED) ||
+        ((exchangeItemAction > PLAYER_IA_NONE) && Player_InCsMode(play)) ||
         (!actor->isLockedOn &&
          ((fabsf(actor->playerHeightRel) > fabsf(yRange)) || (actor->xzDistToPlayer > player->talkActorDistance) ||
           (xzRange < actor->xzDistToPlayer)))) {
@@ -2022,7 +2016,7 @@ s32 Actor_OfferTalkNearColChkInfoCylinder(Actor* actor, PlayState* play) {
 
 s32 Actor_TextboxIsClosing(Actor* actor, PlayState* play) {
     if (Message_GetState(&play->msgCtx) == TEXT_STATE_CLOSING) {
-        actor->flags &= ~ACTOR_FLAG_TALK;
+        actor->flags &= ~ACTOR_FLAG_TALK_REQUESTED;
         return true;
     }
 
@@ -2039,7 +2033,7 @@ s32 Actor_ChangeFocus(Actor* actor1, PlayState* play, Actor* actor2) {
 
     talkActor = player->talkActor;
 
-    if ((player->actor.flags & ACTOR_FLAG_TALK) && (talkActor != NULL)) {
+    if ((player->actor.flags & ACTOR_FLAG_TALK_REQUESTED) && (talkActor != NULL)) {
         player->talkActor = actor2;
         player->lockOnActor = actor2;
         return true;
@@ -2106,7 +2100,7 @@ void Actor_GetScreenPos(PlayState* play, Actor* actor, s16* x, s16* y) {
     *y = PROJECTED_TO_SCREEN_Y(projectedPos, invW);
 }
 
-bool Actor_OnScreen(PlayState* play, Actor* actor) {
+s32 Actor_OnScreen(PlayState* play, Actor* actor) {
     Vec3f projectedPos;
     f32 invW;
     s32 pad[2];
@@ -2445,7 +2439,7 @@ void Actor_InitContext(PlayState* play, ActorContext* actorCtx, ActorEntry* acto
     Target_Init(&actorCtx->targetCtx, actorCtx->actorLists[ACTORCAT_PLAYER].first, play);
     Actor_InitHalfDaysBit(actorCtx);
     Fault_AddClient(&sActorFaultClient, (void*)Actor_PrintLists, actorCtx, NULL);
-    Player_SpawnHorse(play, (Player*)actorCtx->actorLists[ACTORCAT_PLAYER].first);
+    Actor_SpawnHorse(play, (Player*)actorCtx->actorLists[ACTORCAT_PLAYER].first);
 }
 
 /**
@@ -3405,9 +3399,9 @@ Actor* Actor_SpawnAsChild(ActorContext* actorCtx, Actor* parent, PlayState* play
 }
 
 void Actor_SpawnTransitionActors(PlayState* play, ActorContext* actorCtx) {
-    TransitionActorEntry* transitionActorList = play->doorCtx.transitionActorList;
+    TransitionActorEntry* transitionActorList = play->transitionActors.list;
     s32 i;
-    s16 numTransitionActors = play->doorCtx.numTransitionActors;
+    s16 numTransitionActors = play->transitionActors.count;
 
     for (i = 0; i < numTransitionActors; transitionActorList++, i++) {
         if (transitionActorList->id >= 0) {
@@ -3426,7 +3420,7 @@ void Actor_SpawnTransitionActors(PlayState* play, ActorContext* actorCtx) {
                                                   transitionActorList->rotY & 0x7F, HALFDAYBIT_ALL, 0) != NULL) {
                     transitionActorList->id = -transitionActorList->id;
                 }
-                numTransitionActors = play->doorCtx.numTransitionActors;
+                numTransitionActors = play->transitionActors.count;
             }
         }
     }
@@ -3498,7 +3492,7 @@ Actor* Actor_Delete(ActorContext* actorCtx, Actor* actor, PlayState* play) {
     return newHead;
 }
 
-bool Target_InTargetableScreenRegion(PlayState* play, Actor* actor) {
+s32 Target_InTargetableScreenRegion(PlayState* play, Actor* actor) {
     s16 x;
     s16 y;
 
@@ -4132,7 +4126,7 @@ void Actor_GetClosestPosOnPath(Vec3s* points, s32 numPoints, Vec3f* srcPos, Vec3
 
     // Find the point closest to srcPos
     for (pointIndex = 0; pointIndex < numPoints; pointIndex++) {
-        distSq = Math3D_XZDistanceSquared(srcPos->x, srcPos->z, points[pointIndex].x, points[pointIndex].z);
+        distSq = Math3D_Dist2DSq(srcPos->x, srcPos->z, points[pointIndex].x, points[pointIndex].z);
         if (distSq < closestPointDistSq) {
             closestPointDistSq = distSq;
             closestPointIndex = pointIndex;
@@ -4157,8 +4151,8 @@ void Actor_GetClosestPosOnPath(Vec3s* points, s32 numPoints, Vec3f* srcPos, Vec3
     if ((closestPointIndex != 0) || isPathLoop) {
         // Use the adjacent line
         useAdjacentLines[0] =
-            Math3D_PointDistToLine2D(srcPos->x, srcPos->z, closestPointPrev.x, closestPointPrev.z, closestPoint.x,
-                                     closestPoint.z, &closestPos[0].x, &closestPos[0].z, &distSq);
+            Math3D_PointDistSqToLine2DImpl(srcPos->x, srcPos->z, closestPointPrev.x, closestPointPrev.z, closestPoint.x,
+                                           closestPoint.z, &closestPos[0].x, &closestPos[0].z, &distSq);
     }
 
     // Analyze point on path immediately next to the closest point
@@ -4174,8 +4168,8 @@ void Actor_GetClosestPosOnPath(Vec3s* points, s32 numPoints, Vec3f* srcPos, Vec3
     }
     if ((closestPointIndex + 1 != numPoints) || isPathLoop) {
         useAdjacentLines[1] =
-            Math3D_PointDistToLine2D(srcPos->x, srcPos->z, closestPoint.x, closestPoint.z, closestPointNext.x,
-                                     closestPointNext.z, &closestPos[1].x, &closestPos[1].z, &distSq);
+            Math3D_PointDistSqToLine2DImpl(srcPos->x, srcPos->z, closestPoint.x, closestPoint.z, closestPointNext.x,
+                                           closestPointNext.z, &closestPos[1].x, &closestPos[1].z, &distSq);
     }
 
     /**
@@ -4193,7 +4187,7 @@ void Actor_GetClosestPosOnPath(Vec3s* points, s32 numPoints, Vec3f* srcPos, Vec3
         for (i = 0; i < ARRAY_COUNT(loopDistSq); i++) {
             if (useAdjacentLines[i]) {
                 // Get distSq from srcPos to closestPos
-                loopDistSq[i] = Math3D_XZDistanceSquared(srcPos->x, srcPos->z, closestPos[i].x, closestPos[i].z);
+                loopDistSq[i] = Math3D_Dist2DSq(srcPos->x, srcPos->z, closestPos[i].x, closestPos[i].z);
             } else {
                 // The closest Pos is not contained within the line-segment
                 loopDistSq[i] = SQ(40000.0f);
@@ -4212,9 +4206,9 @@ void Actor_GetClosestPosOnPath(Vec3s* points, s32 numPoints, Vec3f* srcPos, Vec3
         // srcPos is somewhere withing the bend of the path
         if (!isRightSideOfAdjacentLines[0] && !isRightSideOfAdjacentLines[1]) {
             // srcPos is not inside a loop
-            if (!Math3D_PointDistToLine2D(srcPos->x, srcPos->z, closestPos[0].x, closestPos[0].z, closestPos[1].x,
-                                          closestPos[1].z, &dstPos->x, &dstPos->z, &distSq)) {
-                // The dstPos calculated in Math3D_PointDistToLine2D was not valid.
+            if (!Math3D_PointDistSqToLine2DImpl(srcPos->x, srcPos->z, closestPos[0].x, closestPos[0].z, closestPos[1].x,
+                                                closestPos[1].z, &dstPos->x, &dstPos->z, &distSq)) {
+                // The dstPos calculated in Math3D_PointDistSqToLine2DImpl was not valid.
                 // Take the midpoint of the two closest ponits instead
                 dstPos->x = (closestPos[1].x + closestPos[0].x) * 0.5f;
                 dstPos->z = (closestPos[1].z + closestPos[0].z) * 0.5f;
@@ -4266,7 +4260,7 @@ void Actor_GetClosestPosOnPath(Vec3s* points, s32 numPoints, Vec3f* srcPos, Vec3
  */
 s32 Npc_UpdateTalking(PlayState* play, Actor* actor, s16* talkState, f32 interactRange, NpcGetTextIdFunc getTextId,
                       NpcUpdateTalkStateFunc updateTalkState) {
-    if (Actor_TalkOfferAccepted(actor, &play->state)) {
+    if (Actor_ProcessTalkRequest(actor, &play->state)) {
         *talkState = NPC_TALK_STATE_TALKING;
         return true;
     }

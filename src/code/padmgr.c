@@ -528,7 +528,7 @@ void PadMgr_InitVoice(void) {
             } else {
                 sPadMgrInstance->ctrlrType[i] = PADMGR_CONT_VOICE;
                 sVoiceInitStatus = VOICE_INIT_SUCCESS;
-                AudioVoice_Noop();
+                func_801A4EB0();
             }
         }
     }

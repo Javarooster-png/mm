@@ -65,6 +65,8 @@
 #include "z64rumble.h"
 #include "z64transition.h"
 #include "z64view.h"
+#include "z64msgevent.h"
+#include "z64keyframe.h"
 #include "regs.h"
 
 
@@ -114,7 +116,7 @@ typedef struct PauseContext {
     /* 0x238 */ s16 cursorPoint[5];
     /* 0x242 */ s16 cursorXIndex[5];
     /* 0x24C */ s16 cursorYIndex[5];
-    /* 0x256 */ s16 unk_256; // Uses DungeonItem enum
+    /* 0x256 */ s16 cursorMapDungeonItem; // Uses DungeonItem enum
     /* 0x258 */ s16 cursorSpecialPos;
     /* 0x25A */ s16 pageSwitchInputTimer; // Used to introduce a delay before switching page when arriving on the "scroll left/right" positions while holding stick left/right.
     /* 0x25C */ u16 namedItem;
@@ -168,6 +170,24 @@ typedef enum {
 } KaleidoMgrOverlayType;
 
 typedef struct {
+    /* 0x00 */ TexturePtr timg;
+    /* 0x04 */ TexturePtr tlut;
+    /* 0x08 */ u16 width;
+    /* 0x0A */ u16 height;
+    /* 0x0C */ u8 fmt;
+    /* 0x0D */ u8 siz;
+    /* 0x0E */ u16 tt;
+    /* 0x10 */ u16 unk_10;
+    /* 0x14 */ f32 x;
+    /* 0x18 */ f32 y;
+    /* 0x1C */ f32 xScale;
+    /* 0x20 */ f32 yScale;
+    /* 0x24 */ u32 flags;
+} PreRenderParams; // size = 0x28
+
+struct PlayState;
+
+typedef struct {
     /* 0x0 */ u8   seqId;
     /* 0x1 */ u8   ambienceId;
 } SequenceContext; // size = 0x2
@@ -203,7 +223,7 @@ typedef struct PlayState {
     /* 0x17104 */ AnimationContext animationCtx;
     /* 0x17D88 */ ObjectContext objectCtx;
     /* 0x186E0 */ RoomContext roomCtx;
-    /* 0x18760 */ DoorContext doorCtx;
+    /* 0x18760 */ TransitionActorList transitionActors;
     /* 0x18768 */ void (*playerInit)(Player* player, struct PlayState* play, FlexSkeletonHeader* skelHeader);
     /* 0x1876C */ void (*playerUpdate)(Player* player, struct PlayState* play, Input* input);
     /* 0x18770 */ void (*unk_18770)(struct PlayState* play, Player* player);
@@ -242,7 +262,7 @@ typedef struct PlayState {
     /* 0x18876 */ s16 worldCoverAlpha;
     /* 0x18878 */ s16 bgCoverAlpha;
     /* 0x1887A */ u16 nextEntrance;
-    /* 0x1887C */ s8 unk_1887C; // shootingGalleryStatus?
+    /* 0x1887C */ s8 bButtonAmmoPlusOne;
     /* 0x1887D */ s8 unk_1887D;
     /* 0x1887E */ s8 unk_1887E;
     /* 0x1887F */ u8 transitionType; // fadeTransition

@@ -136,7 +136,7 @@ extern RegEditor* gRegEditor;
 #define R_A_BTN_COLOR(i)                    XREG(22 + i)
 #define R_A_BTN_Y_OFFSET                    XREG(31)
 #define R_MAGIC_CONSUME_TIMER_GIANTS_MASK   XREG(41)
-#define R_THREE_DAY_CLOCK_Y_POS             XREG(43)
+#define R_THREE_DAY_CLOCK_Y_POS             XREG(43) // TODO: Test
 #define R_THREE_DAY_CLOCK_SUN_MOON_CUTOFF   XREG(44)
 #define R_THREE_DAY_CLOCK_HOUR_DIGIT_CUTOFF XREG(45)
 #define R_PAUSE_DBG_MAP_CLOUD_ON            XREG(50)
@@ -146,7 +146,7 @@ extern RegEditor* gRegEditor;
 #define R_MOON_CRASH_TIMER_X                XREG(81)
 #define R_PAUSE_OWLWARP_ALPHA               XREG(87)
 #define R_STORY_FILL_SCREEN_ALPHA           XREG(91)
-#define R_REVERSE_FLOOR_INDEX               XREG(94)
+#define R_PLAYER_FLOOR_REVERSE_INDEX        XREG(94) // stores what floor the player is on
 #define R_MINIMAP_DISABLED                  XREG(95)
 
 #define R_ENV_LIGHT1_DIR(i)               cREG(3 + (i))

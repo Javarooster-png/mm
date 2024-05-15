@@ -20,7 +20,7 @@ FaultAddrConvClient sKaleidoMgrFaultAddrConvClient;
 uintptr_t KaleidoManager_FaultAddrConv(uintptr_t address, void* param) {
     uintptr_t addr = address;
     KaleidoMgrOverlay* kaleidoMgrOvl = gKaleidoMgrCurOvl;
-    uintptr_t ramConv;
+    size_t ramConv;
     void* ramStart;
     size_t diff;
 

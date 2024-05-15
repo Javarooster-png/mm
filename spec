@@ -481,12 +481,9 @@ beginseg
     include "build/src/code/z_lights.o"
     include "build/src/code/z_malloc.o"
     include "build/src/code/z_map_disp.o"
-    include "build/data/code/z_map_disp.data.o"
-    include "build/data/code/z_map_disp.bss.o"
     include "build/src/code/z_map_data.o"
     include "build/src/code/z_map_exp.o"
     include "build/src/code/z_msgevent.o"
-    include "build/data/code/z_msgevent.data.o"
     include "build/src/code/z_nmi_buff.o"
     include "build/src/code/code_8010C1B0.o"
     include "build/src/code/z_olib.o"
@@ -561,7 +558,6 @@ beginseg
     include "build/src/code/sys_initial_check.o"
     include "build/src/code/sys_math.o"
     include "build/src/code/sys_math3d.o"
-    include "build/data/code/sys_math3d.bss.o"
     include "build/data/code/code_801D15B0.data.o"
     include "build/src/code/sys_math_atan.o"
     include "build/src/code/sys_matrix.o"
@@ -733,8 +729,7 @@ beginseg
     name "ovl_En_Okuta"
     compress
     include "build/src/overlays/actors/ovl_En_Okuta/z_en_okuta.o"
-    include "build/data/ovl_En_Okuta/ovl_En_Okuta.data.o"
-    include "build/data/ovl_En_Okuta/ovl_En_Okuta.reloc.o"
+    include "build/src/overlays/actors/ovl_En_Okuta/ovl_En_Okuta_reloc.o"
 endseg
 
 beginseg
@@ -1021,17 +1016,14 @@ beginseg
     name "ovl_En_Death"
     compress
     include "build/src/overlays/actors/ovl_En_Death/z_en_death.o"
-    include "build/data/ovl_En_Death/ovl_En_Death.data.o"
-    include "build/data/ovl_En_Death/ovl_En_Death.reloc.o"
+    include "build/src/overlays/actors/ovl_En_Death/ovl_En_Death_reloc.o"
 endseg
 
 beginseg
     name "ovl_En_Minideath"
     compress
     include "build/src/overlays/actors/ovl_En_Minideath/z_en_minideath.o"
-    include "build/data/ovl_En_Minideath/ovl_En_Minideath.data.o"
-    include "build/data/ovl_En_Minideath/ovl_En_Minideath.bss.o"
-    include "build/data/ovl_En_Minideath/ovl_En_Minideath.reloc.o"
+    include "build/src/overlays/actors/ovl_En_Minideath/ovl_En_Minideath_reloc.o"
 endseg
 
 beginseg
@@ -1542,8 +1534,7 @@ beginseg
     name "ovl_Obj_Mure2"
     compress
     include "build/src/overlays/actors/ovl_Obj_Mure2/z_obj_mure2.o"
-    include "build/data/ovl_Obj_Mure2/ovl_Obj_Mure2.data.o"
-    include "build/data/ovl_Obj_Mure2/ovl_Obj_Mure2.reloc.o"
+    include "build/src/overlays/actors/ovl_Obj_Mure2/ovl_Obj_Mure2_reloc.o"
 endseg
 
 beginseg
@@ -2054,8 +2045,7 @@ beginseg
     name "ovl_En_Zl4"
     compress
     include "build/src/overlays/actors/ovl_En_Zl4/z_en_zl4.o"
-    include "build/data/ovl_En_Zl4/ovl_En_Zl4.data.o"
-    include "build/data/ovl_En_Zl4/ovl_En_Zl4.reloc.o"
+    include "build/src/overlays/actors/ovl_En_Zl4/ovl_En_Zl4_reloc.o"
 endseg
 
 beginseg
@@ -2167,9 +2157,7 @@ beginseg
     name "ovl_En_Knight"
     compress
     include "build/src/overlays/actors/ovl_En_Knight/z_en_knight.o"
-    include "build/data/ovl_En_Knight/ovl_En_Knight.data.o"
-    include "build/data/ovl_En_Knight/ovl_En_Knight.bss.o"
-    include "build/data/ovl_En_Knight/ovl_En_Knight.reloc.o"
+    include "build/src/overlays/actors/ovl_En_Knight/ovl_En_Knight_reloc.o"
 endseg
 
 beginseg
@@ -2316,9 +2304,7 @@ beginseg
     name "ovl_Boss_05"
     compress
     include "build/src/overlays/actors/ovl_Boss_05/z_boss_05.o"
-    include "build/data/ovl_Boss_05/ovl_Boss_05.data.o"
-    include "build/data/ovl_Boss_05/ovl_Boss_05.bss.o"
-    include "build/data/ovl_Boss_05/ovl_Boss_05.reloc.o"
+    include "build/src/overlays/actors/ovl_Boss_05/ovl_Boss_05_reloc.o"
 endseg
 
 beginseg
@@ -2332,9 +2318,7 @@ beginseg
     name "ovl_Boss_07"
     compress
     include "build/src/overlays/actors/ovl_Boss_07/z_boss_07.o"
-    include "build/data/ovl_Boss_07/ovl_Boss_07.data.o"
-    include "build/data/ovl_Boss_07/ovl_Boss_07.bss.o"
-    include "build/data/ovl_Boss_07/ovl_Boss_07.reloc.o"
+    include "build/src/overlays/actors/ovl_Boss_07/ovl_Boss_07_reloc.o"
 endseg
 
 beginseg
@@ -2880,9 +2864,7 @@ beginseg
     name "ovl_Obj_Mine"
     compress
     include "build/src/overlays/actors/ovl_Obj_Mine/z_obj_mine.o"
-    include "build/data/ovl_Obj_Mine/ovl_Obj_Mine.data.o"
-    include "build/data/ovl_Obj_Mine/ovl_Obj_Mine.bss.o"
-    include "build/data/ovl_Obj_Mine/ovl_Obj_Mine.reloc.o"
+    include "build/src/overlays/actors/ovl_Obj_Mine/ovl_Obj_Mine_reloc.o"
 endseg
 
 beginseg
@@ -3407,8 +3389,7 @@ beginseg
     name "ovl_En_Wdhand"
     compress
     include "build/src/overlays/actors/ovl_En_Wdhand/z_en_wdhand.o"
-    include "build/data/ovl_En_Wdhand/ovl_En_Wdhand.data.o"
-    include "build/data/ovl_En_Wdhand/ovl_En_Wdhand.reloc.o"
+    include "build/src/overlays/actors/ovl_En_Wdhand/ovl_En_Wdhand_reloc.o"
 endseg
 
 beginseg
@@ -3422,8 +3403,7 @@ beginseg
     name "ovl_Bg_Danpei_Movebg"
     compress
     include "build/src/overlays/actors/ovl_Bg_Danpei_Movebg/z_bg_danpei_movebg.o"
-    include "build/data/ovl_Bg_Danpei_Movebg/ovl_Bg_Danpei_Movebg.data.o"
-    include "build/data/ovl_Bg_Danpei_Movebg/ovl_Bg_Danpei_Movebg.reloc.o"
+    include "build/src/overlays/actors/ovl_Bg_Danpei_Movebg/ovl_Bg_Danpei_Movebg_reloc.o"
 endseg
 
 beginseg
@@ -3493,8 +3473,7 @@ beginseg
     name "ovl_Boss_Hakugin"
     compress
     include "build/src/overlays/actors/ovl_Boss_Hakugin/z_boss_hakugin.o"
-    include "build/data/ovl_Boss_Hakugin/ovl_Boss_Hakugin.data.o"
-    include "build/data/ovl_Boss_Hakugin/ovl_Boss_Hakugin.reloc.o"
+    include "build/src/overlays/actors/ovl_Boss_Hakugin/ovl_Boss_Hakugin_reloc.o"
 endseg
 
 beginseg
@@ -3732,9 +3711,7 @@ beginseg
     name "ovl_En_Invadepoh"
     compress
     include "build/src/overlays/actors/ovl_En_Invadepoh/z_en_invadepoh.o"
-    include "build/data/ovl_En_Invadepoh/ovl_En_Invadepoh.data.o"
-    include "build/data/ovl_En_Invadepoh/ovl_En_Invadepoh.bss.o"
-    include "build/data/ovl_En_Invadepoh/ovl_En_Invadepoh.reloc.o"
+    include "build/src/overlays/actors/ovl_En_Invadepoh/ovl_En_Invadepoh_reloc.o"
 endseg
 
 beginseg
@@ -3965,8 +3942,7 @@ beginseg
     name "ovl_Bg_Dblue_Elevator"
     compress
     include "build/src/overlays/actors/ovl_Bg_Dblue_Elevator/z_bg_dblue_elevator.o"
-    include "build/data/ovl_Bg_Dblue_Elevator/ovl_Bg_Dblue_Elevator.data.o"
-    include "build/data/ovl_Bg_Dblue_Elevator/ovl_Bg_Dblue_Elevator.reloc.o"
+    include "build/src/overlays/actors/ovl_Bg_Dblue_Elevator/ovl_Bg_Dblue_Elevator_reloc.o"
 endseg
 
 beginseg
@@ -4505,8 +4481,7 @@ beginseg
     name "ovl_En_Dt"
     compress
     include "build/src/overlays/actors/ovl_En_Dt/z_en_dt.o"
-    include "build/data/ovl_En_Dt/ovl_En_Dt.data.o"
-    include "build/data/ovl_En_Dt/ovl_En_Dt.reloc.o"
+    include "build/src/overlays/actors/ovl_En_Dt/ovl_En_Dt_reloc.o"
 endseg
 
 beginseg
@@ -4709,8 +4684,7 @@ beginseg
     name "ovl_En_Kitan"
     compress
     include "build/src/overlays/actors/ovl_En_Kitan/z_en_kitan.o"
-    include "build/data/ovl_En_Kitan/ovl_En_Kitan.data.o"
-    include "build/data/ovl_En_Kitan/ovl_En_Kitan.reloc.o"
+    include "build/src/overlays/actors/ovl_En_Kitan/ovl_En_Kitan_reloc.o"
 endseg
 
 beginseg
@@ -4731,8 +4705,7 @@ beginseg
     name "ovl_En_Bsb"
     compress
     include "build/src/overlays/actors/ovl_En_Bsb/z_en_bsb.o"
-    include "build/data/ovl_En_Bsb/ovl_En_Bsb.data.o"
-    include "build/data/ovl_En_Bsb/ovl_En_Bsb.reloc.o"
+    include "build/src/overlays/actors//ovl_En_Bsb/ovl_En_Bsb_reloc.o"
 endseg
 
 beginseg
@@ -8839,21 +8812,21 @@ beginseg
     name "d2_fine_static"
     compress
     romalign 0x1000
-    include "build/baserom/d2_fine_static.o"
+    include "build/assets/misc/skyboxes/d2_fine_static.o"
 endseg
 
 beginseg
     name "d2_cloud_static"
     compress
     romalign 0x1000
-    include "build/baserom/d2_cloud_static.o"
+    include "build/assets/misc/skyboxes/d2_cloud_static.o"
 endseg
 
 beginseg
     name "d2_fine_pal_static"
     compress
     romalign 0x1000
-    include "build/baserom/d2_fine_pal_static.o"
+    include "build/assets/misc/skyboxes/d2_fine_pal_static.o"
 endseg
 
 beginseg

@@ -207,7 +207,7 @@ s32 func_80BECD10(EnAkindonuts* this, Path* path, s32 arg2) {
         phi_f14 = sp5C[idx + 1].z - sp5C[idx - 1].z;
     }
 
-    func_8017B7F8(&sp30, RAD_TO_BINANG(Math_FAtan2F(phi_f12, phi_f14)), &sp44, &sp40, &sp3C);
+    Math3D_RotateXZPlane(&sp30, RAD_TO_BINANG(Math_FAtan2F(phi_f12, phi_f14)), &sp44, &sp40, &sp3C);
     if (((this->actor.world.pos.x * sp44) + (sp40 * this->actor.world.pos.z) + sp3C) > 0.0f) {
         sp50 = true;
     }
@@ -1313,7 +1313,7 @@ void func_80BEEE10(EnAkindonuts* this, PlayState* play) {
     Math_SmoothStepToS(&this->actor.shape.rot.y, this->actor.yawTowardsPlayer, 3, 2000, 0);
     this->actor.world.rot.y = this->actor.shape.rot.y;
 
-    if (Actor_TalkOfferAccepted(&this->actor, &play->state)) {
+    if (Actor_ProcessTalkRequest(&this->actor, &play->state)) {
         this->unk_2DC(this, play);
         this->actionFunc = func_80BEEFA8;
     } else if (((this->actor.xzDistToPlayer < 100.0f) &&
@@ -1440,7 +1440,7 @@ void func_80BEF450(EnAkindonuts* this, PlayState* play) {
 }
 
 void func_80BEF4B8(EnAkindonuts* this, PlayState* play) {
-    if (Actor_TalkOfferAccepted(&this->actor, &play->state)) {
+    if (Actor_ProcessTalkRequest(&this->actor, &play->state)) {
         this->unk_2DC(this, play);
         this->actionFunc = func_80BEEFA8;
     } else {

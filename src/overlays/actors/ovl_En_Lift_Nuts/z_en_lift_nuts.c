@@ -29,8 +29,8 @@ void EnLiftNuts_StartConversation(EnLiftNuts* this, PlayState* play);
 void EnLiftNuts_HandleConversation(EnLiftNuts* this, PlayState* play);
 void EnLiftNuts_SetupMove(EnLiftNuts* this);
 void EnLiftNuts_Move(EnLiftNuts* this, PlayState* play);
-void EnLiftNuts_SetupMovePlayerToActor(EnLiftNuts* this);
-void EnLiftNuts_MovePlayerToActor(EnLiftNuts* this, PlayState* play);
+void EnLiftNuts_SetupMovePlayer(EnLiftNuts* this);
+void EnLiftNuts_MovePlayer(EnLiftNuts* this, PlayState* play);
 void EnLiftNuts_SetupStartGame(EnLiftNuts* this);
 void EnLiftNuts_StartGame(EnLiftNuts* this, PlayState* play);
 void EnLiftNuts_SetupStartGameImmediately(EnLiftNuts* this);
@@ -383,7 +383,7 @@ void EnLiftNuts_Idle(EnLiftNuts* this, PlayState* play) {
     } else if (this->actor.xzDistToPlayer > 120.0f) {
         EnLiftNuts_SetupBurrow(this);
     }
-    if (Actor_TalkOfferAccepted(&this->actor, &play->state)) {
+    if (Actor_ProcessTalkRequest(&this->actor, &play->state)) {
         if (GET_PLAYER_FORM == PLAYER_FORM_DEKU) {
             if (EnLiftNuts_MinigameState(ENLIFTNUTS_MINIGAME_STATE_MODE_CHECK, ENLIFTNUTS_MINIGAME_STATE_NONE)) {
                 switch (CURRENT_DAY) {
@@ -774,45 +774,45 @@ void EnLiftNuts_Move(EnLiftNuts* this, PlayState* play) {
     this->actor.world.pos.y += this->actor.gravity;
 
     if (dist == 0.0f) {
-        EnLiftNuts_SetupMovePlayerToActor(this);
+        EnLiftNuts_SetupMovePlayer(this);
     }
 }
 
-void EnLiftNuts_SetupMovePlayerToActor(EnLiftNuts* this) {
-    this->actionFunc = EnLiftNuts_MovePlayerToActor;
+void EnLiftNuts_SetupMovePlayer(EnLiftNuts* this) {
+    this->actionFunc = EnLiftNuts_MovePlayer;
 }
 
-void EnLiftNuts_MovePlayerToActor(EnLiftNuts* this, PlayState* play) {
+void EnLiftNuts_MovePlayer(EnLiftNuts* this, PlayState* play) {
     Player* player = GET_PLAYER(play);
-    f32 distXZ;
-    f32 controlStickMagnitude;
-    s16 controlStickAngle;
+    f32 dist;
+    f32 magnitude;
+    s16 playerYaw;
     s16 yaw;
     s16 yawDiff;
 
     yaw = this->actor.yawTowardsPlayer - 0x8000;
-    controlStickAngle = Math_Vec3f_Yaw(&player->actor.world.pos, &this->actor.home.pos);
-    yawDiff = controlStickAngle - yaw;
-    distXZ = Math_Vec3f_DistXZ(&player->actor.world.pos, &this->actor.home.pos);
+    playerYaw = Math_Vec3f_Yaw(&player->actor.world.pos, &this->actor.home.pos);
+    yawDiff = playerYaw - yaw;
+    dist = Math_Vec3f_DistXZ(&player->actor.world.pos, &this->actor.home.pos);
 
-    if (this->actor.xzDistToPlayer < distXZ) {
+    if (this->actor.xzDistToPlayer < dist) {
         if (ABS_ALT(yawDiff) < 0x2000) {
-            controlStickAngle = (yawDiff > 0) ? (controlStickAngle + 0x2000) : (controlStickAngle - 0x2000);
+            playerYaw = (yawDiff > 0) ? (playerYaw + 0x2000) : (playerYaw - 0x2000);
         }
     }
 
-    if (distXZ < 5.0f) {
-        controlStickMagnitude = 10.0f;
-    } else if (distXZ < 30.0f) {
-        controlStickMagnitude = 40.0f;
+    if (dist < 5.0f) {
+        magnitude = 10.0f;
+    } else if (dist < 30.0f) {
+        magnitude = 40.0f;
     } else {
-        controlStickMagnitude = 80.0f;
+        magnitude = 80.0f;
     }
 
-    play->actorCtx.isOverrideInputOn = true;
-    Actor_SetControlStickData(play, &play->actorCtx.overrideInput, controlStickMagnitude, controlStickAngle);
+    play->actorCtx.unk268 = true;
+    func_800B6F20(play, &play->actorCtx.unk_26C, magnitude, playerYaw);
 
-    if (distXZ < 5.0f) {
+    if (dist < 5.0f) {
         EnLiftNuts_SetupIdle(this);
     }
 }
@@ -944,7 +944,7 @@ void EnLiftNuts_SetupResumeConversation(EnLiftNuts* this) {
  * Resumes the current conversation after giving player the reward for winning the minigame.
  */
 void EnLiftNuts_ResumeConversation(EnLiftNuts* this, PlayState* play) {
-    if (Actor_TalkOfferAccepted(&this->actor, &play->state)) {
+    if (Actor_ProcessTalkRequest(&this->actor, &play->state)) {
         if (CHECK_WEEKEVENTREG(WEEKEVENTREG_WON_DEKU_PLAYGROUND_DAY_1) &&
             CHECK_WEEKEVENTREG(WEEKEVENTREG_WON_DEKU_PLAYGROUND_DAY_2) && (CURRENT_DAY == 3)) {
             Actor_ChangeAnimationByInfo(&this->skelAnime, sAnimationInfo, ENLIFTNUTS_ANIM_SHOCKED_END);

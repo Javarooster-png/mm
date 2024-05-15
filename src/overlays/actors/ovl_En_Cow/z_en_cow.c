@@ -133,7 +133,7 @@ void EnCow_Init(Actor* thisx, PlayState* play) {
             this->actor.targetMode = TARGET_MODE_6;
 
             gHorsePlayedEponasSong = false;
-            AudioVoice_InitWord(VOICE_WORD_ID_MILK);
+            func_801A5080(VOICE_WORD_ID_MILK);
             break;
 
         case EN_COW_TYPE_TAIL:
@@ -251,7 +251,7 @@ void EnCow_CheckForEmptyBottle(EnCow* this, PlayState* play) {
 }
 
 void EnCow_Talk(EnCow* this, PlayState* play) {
-    if (Actor_TalkOfferAccepted(&this->actor, &play->state)) {
+    if (Actor_ProcessTalkRequest(&this->actor, &play->state)) {
         if (this->actor.textId == 0x32C8) { // Text to give milk after playing Epona's Song.
             this->actionFunc = EnCow_CheckForEmptyBottle;
         } else if (this->actor.textId == 0x32C9) { // Text to give milk.

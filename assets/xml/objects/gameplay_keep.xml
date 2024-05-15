@@ -908,7 +908,7 @@
         <Texture Name="gElegyShellBeltAndTunicTex" OutName="elegy_shell_human_belt_and_tunic" Format="rgba16" Width="32" Height="16" Offset="0x1E6F8" />
         <Texture Name="gElegyShellHumanHairTex" OutName="elegy_shell_human_hair" Format="rgba16" Width="16" Height="16" Offset="0x1EAF8" />
 
-        <DList Name="gameplay_keep_DL_01ED00" Offset="0x1ED00" />
+        <DList Name="gCompassArrowDL" Offset="0x1ED00" />
         <DList Name="gameplay_keep_DL_01ED90" Offset="0x1ED90" />
         <DList Name="gZTargetArrowDL" Offset="0x1F0F0" />
         <Texture Name="gameplay_keep_Tex_01F200" OutName="tex_01F200" Format="i8" Width="8" Height="8" Offset="0x1F200" />

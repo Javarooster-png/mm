@@ -86,7 +86,7 @@ static ColliderCylinderInit sCylinderInit = {
     { 18, 46, 0, { 0, 0, 0 } },
 };
 
-static CollisionCheckInfoInit2 sColChkInfoInit = { 0, 0, 0, 0, MASS_IMMOVABLE };
+static CollisionCheckInfoInit2 D_80AC00DC = { 0, 0, 0, 0, MASS_IMMOVABLE };
 
 static TexturePtr sEyeTextures[] = {
     gRomaniEyeOpenTex, gRomaniEyeHalfTex, gRomaniEyeClosedTex, gRomaniEyeHappyTex, gRomaniEyeSadTex,
@@ -213,7 +213,7 @@ void EnMa4_Init(Actor* thisx, PlayState* play) {
 
     Collider_InitCylinder(play, &this->collider);
     Collider_SetCylinder(play, &this->collider, &this->actor, &sCylinderInit);
-    CollisionCheck_SetInfo2(&this->actor.colChkInfo, DamageTable_Get(0x16), &sColChkInfoInit);
+    CollisionCheck_SetInfo2(&this->actor.colChkInfo, DamageTable_Get(0x16), &D_80AC00DC);
 
     Actor_UpdateBgCheckInfo(play, &this->actor, 0.0f, 0.0f, 0.0f, UPDBGCHECKINFO_FLAG_4);
     Actor_SetScale(&this->actor, 0.01f);
@@ -370,7 +370,7 @@ void EnMa4_Wait(EnMa4* this, PlayState* play) {
         }
     }
 
-    if (Actor_TalkOfferAccepted(&this->actor, &play->state)) {
+    if (Actor_ProcessTalkRequest(&this->actor, &play->state)) {
         EnMa4_StartDialogue(this, play);
         EnMa4_SetupDialogueHandler(this);
     } else if (this->type != MA4_TYPE_ALIENS_WON || ABS_ALT(yaw) < 0x4000) {
@@ -703,7 +703,7 @@ void EnMa4_BeginHorsebackGame(EnMa4* this, PlayState* play) {
 }
 
 void EnMa4_HorsebackGameCheckPlayerInteractions(EnMa4* this, PlayState* play) {
-    if (Actor_TalkOfferAccepted(&this->actor, &play->state)) {
+    if (Actor_ProcessTalkRequest(&this->actor, &play->state)) {
         // "You're feeling confident"
         Message_StartTextbox(play, 0x336E, &this->actor);
         this->actionFunc = EnMa4_HorsebackGameTalking;
@@ -770,10 +770,10 @@ void EnMa4_HorsebackGameEnd(EnMa4* this, PlayState* play) {
     Player* player = GET_PLAYER(play);
 
     if (player->stateFlags1 & PLAYER_STATE1_100000) {
-        play->actorCtx.isOverrideInputOn = true;
-        play->actorCtx.overrideInput.press.button = BTN_A;
+        play->actorCtx.unk268 = 1;
+        play->actorCtx.unk_26C.press.button = BTN_A;
     } else {
-        play->actorCtx.isOverrideInputOn = true;
+        play->actorCtx.unk268 = 1;
     }
 
     if (sFrameCounter == 25) {
@@ -785,7 +785,7 @@ void EnMa4_HorsebackGameEnd(EnMa4* this, PlayState* play) {
             this->textId = 0x334B;
         }
     } else if (sFrameCounter == 50) {
-        play->actorCtx.isOverrideInputOn = false;
+        play->actorCtx.unk268 = 0;
         play->nextEntrance = ENTRANCE(ROMANI_RANCH, 1);
         gSaveContext.nextCutsceneIndex = 0;
         sFrameCounter = 0;
@@ -880,7 +880,7 @@ void EnMa4_EndEponasSongCs(EnMa4* this, PlayState* play) {
     Player* player = GET_PLAYER(play);
 
     this->actor.flags |= ACTOR_FLAG_10000;
-    if (Actor_TalkOfferAccepted(&this->actor, &play->state)) {
+    if (Actor_ProcessTalkRequest(&this->actor, &play->state)) {
         player->stateFlags1 &= ~PLAYER_STATE1_20;
         Message_StartTextbox(play, 0x334C, &this->actor);
         this->textId = 0x334C;

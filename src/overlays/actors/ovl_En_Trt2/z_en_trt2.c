@@ -432,7 +432,7 @@ void func_80AD40AC(EnTrt2* this, PlayState* play) {
 }
 
 void func_80AD4110(EnTrt2* this, PlayState* play) {
-    if (Actor_TalkOfferAccepted(&this->actor, &play->state)) {
+    if (Actor_ProcessTalkRequest(&this->actor, &play->state)) {
         this->unk_3A8 = 0x84C;
         Message_ContinueTextbox(play, this->unk_3A8);
         this->unk_3B2 = 10;
@@ -593,7 +593,7 @@ s32 func_80AD475C(EnTrt2* this, Path* path, s32 arg2) {
         phi_f14 = points[arg + 1].z - points[arg - 1].z;
     }
 
-    func_8017B7F8(&sp30, RAD_TO_BINANG(Math_FAtan2F(phi_f12, phi_f14)), &sp44, &sp40, &sp3C);
+    Math3D_RotateXZPlane(&sp30, RAD_TO_BINANG(Math_FAtan2F(phi_f12, phi_f14)), &sp44, &sp40, &sp3C);
 
     if (((this->actor.world.pos.x * sp44) + (sp40 * this->actor.world.pos.z) + sp3C) > 0.0f) {
         ret = true;
@@ -643,7 +643,7 @@ void func_80AD4A78(EnTrt2* this, PlayState* play) {
     sp34.x = Rand_CenteredFloat(15.0f) + this->actor.world.pos.x;
     sp34.y = this->actor.world.pos.y;
     sp34.z = Rand_CenteredFloat(15.0f) + this->actor.world.pos.z;
-    Actor_SpawnFloorDustRing(play, &this->actor, &sp34, 50.0f, 0, 2.0f, 0, 0, false);
+    Actor_SpawnFloorDustRing(play, &this->actor, &sp34, 50.0f, 0, 2.0f, 0, 0, 0);
 }
 
 s32 func_80AD4B08(PlayState* play) {
@@ -662,7 +662,7 @@ s32 func_80AD4B4C(EnTrt2* this, PlayState* play) {
     s32 sp24 = false;
     Player* player = GET_PLAYER(play);
 
-    if (Actor_TalkOfferAccepted(&this->actor, &play->state)) {
+    if (Actor_ProcessTalkRequest(&this->actor, &play->state)) {
         sp24 = true;
         this->actor.speed = 0.0f;
         func_80AD349C(this);

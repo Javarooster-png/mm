@@ -6,6 +6,7 @@
 #include "z64item.h"
 #include "z64math.h"
 #include "unk.h"
+#include "z64item.h"
 
 struct GameState;
 struct PlayState;
@@ -34,16 +35,16 @@ typedef enum RespawnMode {
 #define SAVE_BUFFER_SIZE 0x4000
 
 typedef enum {
-    /*  0 */ MAGIC_STATE_IDLE, // Regular gameplay
-    /*  1 */ MAGIC_STATE_CONSUME_SETUP, // Sets the speed at which the magic border flashes
-    /*  2 */ MAGIC_STATE_CONSUME, // Consume magic until target is reached or no more magic is available
-    /*  3 */ MAGIC_STATE_METER_FLASH_1, // Flashes border
-    /*  4 */ MAGIC_STATE_METER_FLASH_2, // Flashes border and draws yellow magic to preview target consumption
-    /*  5 */ MAGIC_STATE_RESET, // Reset colors and return to idle
-    /*  6 */ MAGIC_STATE_METER_FLASH_3, // Flashes border with no additional behaviour
-    /*  7 */ MAGIC_STATE_CONSUME_LENS, // Magic slowly consumed by Lens of Truth
-    /*  8 */ MAGIC_STATE_STEP_CAPACITY, // Step `magicCapacity` to full capacity
-    /*  9 */ MAGIC_STATE_FILL, // Add magic until magicFillTarget is reached
+    /* 0  */ MAGIC_STATE_IDLE, // Regular gameplay
+    /* 1  */ MAGIC_STATE_CONSUME_SETUP, // Sets the speed at which the magic border flashes
+    /* 2  */ MAGIC_STATE_CONSUME, // Consume magic until target is reached or no more magic is available
+    /* 3  */ MAGIC_STATE_METER_FLASH_1, // Flashes border
+    /* 4  */ MAGIC_STATE_METER_FLASH_2, // Flashes border and draws yellow magic to preview target consumption
+    /* 5  */ MAGIC_STATE_RESET, // Reset colors and return to idle
+    /* 6  */ MAGIC_STATE_METER_FLASH_3, // Flashes border with no additional behaviour
+    /* 7  */ MAGIC_STATE_CONSUME_LENS, // Magic slowly consumed by Lens of Truth
+    /* 8  */ MAGIC_STATE_STEP_CAPACITY, // Step `magicCapacity` to full capacity
+    /* 9  */ MAGIC_STATE_FILL, // Add magic until magicFillTarget is reached
     /* 10 */ MAGIC_STATE_CONSUME_GORON_ZORA_SETUP,
     /* 11 */ MAGIC_STATE_CONSUME_GORON_ZORA, // Magic slowly consumed by Goron spiked rolling or Zora electric barrier.
     /* 12 */ MAGIC_STATE_CONSUME_GIANTS_MASK // Magic slowly consumed by Giant's Mask
@@ -493,8 +494,15 @@ typedef enum {
 #define RESET_HEART_PIECE_COUNT (gSaveContext.save.saveInfo.inventory.questItems ^= (4 << QUEST_HEART_PIECE_COUNT))
 
 #define CHECK_DUNGEON_ITEM(item, dungeonIndex) (gSaveContext.save.saveInfo.inventory.dungeonItems[(void)0, dungeonIndex] & gBitFlags[item])
+#define CHECK_DUNGEON_ITEM_ALT(item, dungeonIndex) (gSaveContext.save.saveInfo.inventory.dungeonItems[dungeonIndex] & gBitFlags[item])
 #define SET_DUNGEON_ITEM(item, dungeonIndex) (gSaveContext.save.saveInfo.inventory.dungeonItems[(void)0, dungeonIndex] |= (u8)gBitFlags[item])
 #define DUNGEON_KEY_COUNT(dungeonIndex) (gSaveContext.save.saveInfo.inventory.dungeonKeys[(void)0, dungeonIndex])
+#define GET_DUNGEON_FLOOR_VISITED(sceneId, floor) (gSaveContext.save.saveInfo.permanentSceneFlags[(sceneId)].unk_14 & gBitFlags[floor])
+#define SET_DUNGEON_FLOOR_VISITED(sceneId, floor) (gSaveContext.save.saveInfo.permanentSceneFlags[(sceneId)].unk_14 |= gBitFlags[floor])
+#define GET_ROOM_VISITED(sceneId, room) (((void)0, gSaveContext.save.saveInfo.permanentSceneFlags[(sceneId)].rooms) & (1 << (room)))
+#define SET_ROOM_VISITED(sceneId, room) (gSaveContext.save.saveInfo.permanentSceneFlags[(sceneId)].rooms |= gBitFlags[room])
+#define GET_CYCLE_CHEST_OPENED(sceneId, chestFlagId) ((void)0, gSaveContext.cycleSceneFlags[(sceneId)].chest) & (1 << (chestFlagId));
+
 
 #define GET_CUR_FORM_BTN_ITEM(btn) ((u8)((btn) == EQUIP_SLOT_B ? BUTTON_ITEM_EQUIP(CUR_FORM, btn) : BUTTON_ITEM_EQUIP(0, btn)))
 #define GET_CUR_FORM_BTN_SLOT(btn) ((u8)((btn) == EQUIP_SLOT_B ? C_SLOT_EQUIP(CUR_FORM, btn) : C_SLOT_EQUIP(0, btn)))
@@ -1362,13 +1370,10 @@ typedef enum {
 #define WEEKEVENTREG_86_20 PACK_WEEKEVENTREG_FLAG(86, 0x20)
 #define WEEKEVENTREG_86_40 PACK_WEEKEVENTREG_FLAG(86, 0x40)
 #define WEEKEVENTREG_86_80 PACK_WEEKEVENTREG_FLAG(86, 0x80)
-
 // Currently talking to a cow using the voice recognition unit
 #define WEEKEVENTREG_TALKING_TO_COW_WITH_VOICE PACK_WEEKEVENTREG_FLAG(87, 0x01)
-
 // Set by Anju
 #define WEEKEVENTREG_COUPLES_MASK_CUTSCENE_STARTED PACK_WEEKEVENTREG_FLAG(87, 0x02)
-
 #define WEEKEVENTREG_87_04 PACK_WEEKEVENTREG_FLAG(87, 0x04)
 #define WEEKEVENTREG_87_08 PACK_WEEKEVENTREG_FLAG(87, 0x08)
 #define WEEKEVENTREG_87_10 PACK_WEEKEVENTREG_FLAG(87, 0x10)

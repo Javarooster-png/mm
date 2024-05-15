@@ -5,6 +5,7 @@
  */
 
 #include "z_en_mm3.h"
+#include "objects/object_mm/object_mm.h"
 
 #define FLAGS (ACTOR_FLAG_TARGETABLE | ACTOR_FLAG_FRIENDLY | ACTOR_FLAG_10)
 
@@ -62,27 +63,15 @@ static ColliderCylinderInit sCylinderInit = {
 
 static CollisionCheckInfoInit2 sColChkInfoInit = { 0, 0, 0, 0, MASS_IMMOVABLE };
 
-typedef enum EnMm3Animation {
-    /* 0 */ ENMM3_ANIM_0,
-    /* 1 */ ENMM3_ANIM_1,
-    /* 2 */ ENMM3_ANIM_2,
-    /* 3 */ ENMM3_ANIM_3,
-    /* 4 */ ENMM3_ANIM_4,
-    /* 5 */ ENMM3_ANIM_5,
-    /* 6 */ ENMM3_ANIM_6,
-    /* 7 */ ENMM3_ANIM_7,
-    /* 8 */ ENMM3_ANIM_MAX
-} EnMm3Animation;
-
-static AnimationInfo sAnimationInfo[ENMM3_ANIM_MAX] = {
-    { &object_mm_Anim_002238, 1.0f, 0.0f, 0.0f, ANIMMODE_LOOP, -7.0f },   // ENMM3_ANIM_0
-    { &object_mm_Anim_00A4E0, -1.0f, 0.0f, 0.0f, ANIMMODE_ONCE, -7.0f },  // ENMM3_ANIM_1
-    { &object_mm_Anim_00C640, 1.0f, 0.0f, 0.0f, ANIMMODE_LOOP, -7.0f },   // ENMM3_ANIM_2
-    { &object_mm_Anim_00A4E0, 1.0f, 0.0f, 0.0f, ANIMMODE_ONCE, -7.0f },   // ENMM3_ANIM_3
-    { &object_mm_Anim_000468, 1.0f, 0.0f, 0.0f, ANIMMODE_LOOP, -7.0f },   // ENMM3_ANIM_4
-    { &object_mm_Anim_00CD90, 1.0f, 0.0f, 0.0f, ANIMMODE_LOOP, -12.0f },  // ENMM3_ANIM_5
-    { &object_mm_Anim_00DA50, 1.0f, 0.0f, 0.0f, ANIMMODE_LOOP, -12.0f },  // ENMM3_ANIM_6
-    { &object_mm_Anim_00DA50, 1.0f, 0.0f, 10.0f, ANIMMODE_ONCE, -10.0f }, // ENMM3_ANIM_7
+static AnimationInfo sAnimationInfo[] = {
+    { &object_mm_Anim_002238, 1.0f, 0.0f, 0.0f, ANIMMODE_LOOP, -7.0f },
+    { &object_mm_Anim_00A4E0, -1.0f, 0.0f, 0.0f, ANIMMODE_ONCE, -7.0f },
+    { &object_mm_Anim_00C640, 1.0f, 0.0f, 0.0f, ANIMMODE_LOOP, -7.0f },
+    { &object_mm_Anim_00A4E0, 1.0f, 0.0f, 0.0f, ANIMMODE_ONCE, -7.0f },
+    { &object_mm_Anim_000468, 1.0f, 0.0f, 0.0f, ANIMMODE_LOOP, -7.0f },
+    { &object_mm_Anim_00CD90, 1.0f, 0.0f, 0.0f, ANIMMODE_LOOP, -12.0f },
+    { &object_mm_Anim_00DA50, 1.0f, 0.0f, 0.0f, ANIMMODE_LOOP, -12.0f },
+    { &object_mm_Anim_00DA50, 1.0f, 0.0f, 10.0f, ANIMMODE_ONCE, -10.0f },
 };
 
 #include "overlays/ovl_En_Mm3/ovl_En_Mm3.c"
@@ -97,7 +86,7 @@ void EnMm3_Init(Actor* thisx, PlayState* play) {
 
     ActorShape_Init(&this->actor.shape, 0.0f, ActorShadow_DrawCircle, 21.0f);
     SkelAnime_InitFlex(play, &this->skelAnime, &object_mm_Skel_0096E8, &object_mm_Anim_00A4E0, this->jointTable,
-                       this->morphTable, OBJECT_MM_LIMB_MAX);
+                       this->morphTable, 16);
     Animation_Change(&this->skelAnime, &object_mm_Anim_00A4E0, -1.0f, Animation_GetLastFrame(&object_mm_Anim_00A4E0),
                      0.0f, ANIMMODE_ONCE, 0.0f);
     Collider_InitCylinder(play, &this->collider);
@@ -134,12 +123,12 @@ s32 func_80A6F22C(EnMm3* this) {
 void func_80A6F270(EnMm3* this) {
     this->unk_1DC = 1;
     this->unk_2B0 &= ~1;
-    Actor_ChangeAnimationByInfo(&this->skelAnime, sAnimationInfo, ENMM3_ANIM_5);
+    Actor_ChangeAnimationByInfo(&this->skelAnime, sAnimationInfo, 5);
     this->actionFunc = func_80A6F2C8;
 }
 
 void func_80A6F2C8(EnMm3* this, PlayState* play) {
-    if (Actor_TalkOfferAccepted(&this->actor, &play->state)) {
+    if (Actor_ProcessTalkRequest(&this->actor, &play->state)) {
         Message_StartTextbox(play, 0x278A, &this->actor);
         this->unk_2B4 = 0x278A;
         func_80A6F9C8(this);
@@ -203,9 +192,6 @@ void func_80A6F3B4(EnMm3* this, PlayState* play) {
                     Message_BombersNotebookQueueEvent(play, BOMBERS_NOTEBOOK_EVENT_MET_POSTMAN);
                 }
                 break;
-
-            default:
-                break;
         }
     }
 }
@@ -229,7 +215,7 @@ void func_80A6F5E4(EnMm3* this, PlayState* play) {
                 }
                 this->unk_1DC = 0;
                 this->unk_2B0 |= 1;
-                Actor_ChangeAnimationByInfo(&this->skelAnime, sAnimationInfo, ENMM3_ANIM_7);
+                Actor_ChangeAnimationByInfo(&this->skelAnime, sAnimationInfo, 7);
                 break;
 
             case 0x278B:
@@ -312,9 +298,6 @@ void func_80A6F5E4(EnMm3* this, PlayState* play) {
                 Message_StartTextbox(play, 0x279A, &this->actor);
                 this->unk_2B4 = 0x279A;
                 break;
-
-            default:
-                break;
         }
     } else if ((this->unk_2AC > 0) && (this->unk_2B4 == 0x2791)) {
         this->unk_2AC--;
@@ -374,13 +357,10 @@ void func_80A6F9DC(EnMm3* this, PlayState* play) {
                 }
             }
             break;
-
-        default:
-            break;
     }
 
-    if ((this->skelAnime.mode == ANIMMODE_ONCE) && Animation_OnFrame(&this->skelAnime, this->skelAnime.endFrame)) {
-        Actor_ChangeAnimationByInfo(&this->skelAnime, sAnimationInfo, ENMM3_ANIM_2);
+    if ((this->skelAnime.mode == 2) && Animation_OnFrame(&this->skelAnime, this->skelAnime.endFrame)) {
+        Actor_ChangeAnimationByInfo(&this->skelAnime, sAnimationInfo, 2);
     }
 
     if (((this->unk_2B4 == 0x279D) || (this->unk_2B4 == 0x27A0) || (this->unk_2B4 == 0x278B)) &&
@@ -418,7 +398,7 @@ void func_80A6FBFC(EnMm3* this, PlayState* play) {
         gSaveContext.postmanTimerStopOsTime = osGetTime();
     }
 
-    if (Actor_TalkOfferAccepted(&this->actor, &play->state)) {
+    if (Actor_ProcessTalkRequest(&this->actor, &play->state)) {
         AudioSfx_MuteBanks(0);
         Audio_SetMainBgmVolume(0x7F, 5);
         Message_StartTextbox(play, 0x2791, &this->actor);
@@ -464,7 +444,7 @@ void func_80A6FED8(EnMm3* this) {
 void func_80A6FEEC(EnMm3* this, PlayState* play) {
     Player* player = GET_PLAYER(play);
 
-    if (Actor_TalkOfferAccepted(&this->actor, &play->state)) {
+    if (Actor_ProcessTalkRequest(&this->actor, &play->state)) {
         player->stateFlags1 &= ~PLAYER_STATE1_20;
         Message_StartTextbox(play, 0x2794, &this->actor);
         this->unk_2B4 = 0x2794;
@@ -561,10 +541,10 @@ void EnMm3_Update(Actor* thisx, PlayState* play) {
 s32 EnMm3_OverrideLimbDraw(PlayState* play, s32 limbIndex, Gfx** dList, Vec3f* pos, Vec3s* rot, Actor* thisx) {
     EnMm3* this = THIS;
 
-    if (limbIndex == OBJECT_MM_LIMB_08) {
+    if (limbIndex == 8) {
         rot->x += this->unk_2A6.y;
         rot->y -= this->unk_2A6.x;
-    } else if (limbIndex == OBJECT_MM_LIMB_0F) {
+    } else if (limbIndex == 15) {
         rot->x += this->unk_2A0.y;
         rot->z += this->unk_2A0.x;
         if ((this->unk_2B0 & 2) && ((play->gameplayFrames % 3) == 0)) {
@@ -577,7 +557,7 @@ s32 EnMm3_OverrideLimbDraw(PlayState* play, s32 limbIndex, Gfx** dList, Vec3f* p
 void EnMm3_PostLimbDraw(PlayState* play, s32 limbIndex, Gfx** dList, Vec3s* rot, Actor* thisx) {
     EnMm3* this = THIS;
 
-    if (limbIndex == OBJECT_MM_LIMB_0F) {
+    if (limbIndex == 15) {
         Matrix_MultVec3f(&D_80A704F0, &this->actor.focus.pos);
     }
 }

@@ -77,34 +77,177 @@ static u8 sScheduleScript[] = {
     /* 0x72 */ SCHEDULE_CMD_RET_NONE(),
 };
 
-u8 D_80BC1464[] = {
-    0x1B, 0x04, 0x08, 0x00, 0x6A, 0x0A, 0x00, 0x10, 0x00, 0x08, 0x00, 0x10, 0x00, 0x08, 0x00, 0x00, 0x00, 0x08, 0x0E,
-    0x29, 0x12, 0x2D, 0x00, 0x0E, 0x0C, 0x10, 0x0E, 0x29, 0x01, 0x2D, 0x00, 0x0E, 0x0C, 0x10, 0x0E, 0x29, 0x02, 0x0C,
-    0x0F, 0x29, 0x03, 0x0C, 0x05, 0x00, 0x00, 0x00, 0x06, 0x00, 0x22, 0x31, 0x2D, 0x00, 0x0E, 0x12, 0x10, 0x30, 0x1C,
-    0x04, 0x04, 0x0E, 0x29, 0x04, 0x0C, 0x20, 0x00, 0x03, 0x00, 0x04, 0x15, 0x09, 0x00, 0xC4, 0x09, 0x00, 0x00, 0x0F,
-    0x29, 0x05, 0x0C, 0x15, 0x09, 0x00, 0xB9, 0x30, 0x1D, 0x04, 0x04, 0x0E, 0x29, 0x0B, 0x0C, 0x20, 0x00, 0x03, 0x00,
-    0x04, 0x15, 0x09, 0x00, 0xA8, 0x09, 0x00, 0x00, 0x0F, 0x29, 0x0C, 0x0C, 0x15, 0x09, 0x00, 0x9D, 0x20, 0x00, 0x03,
-    0x00, 0x17, 0x1B, 0x04, 0x04, 0x00, 0x09, 0x0E, 0x29, 0x11, 0x2D, 0x00, 0x0E, 0x0C, 0x16, 0x10, 0x0E, 0x29, 0x0A,
-    0x2D, 0x00, 0x0E, 0x0C, 0x16, 0x10, 0x1B, 0x04, 0x04, 0x00, 0x3B, 0x0E, 0x29, 0x0D, 0x0C, 0x05, 0x00, 0x00, 0x00,
-    0x0A, 0x00, 0x00, 0x0E, 0x29, 0x10, 0x2D, 0x00, 0x0E, 0x0C, 0x12, 0x16, 0x10, 0x0E, 0x29, 0x0E, 0x00, 0x32, 0x04,
-    0x00, 0x59, 0x0C, 0x0F, 0x29, 0x0F, 0x0C, 0x12, 0x06, 0x00, 0x0C, 0x00, 0x00, 0x13, 0x00, 0x0C, 0x2F, 0x00, 0x00,
-    0x2E, 0x2D, 0x00, 0x2A, 0x2D, 0x00, 0x0E, 0x11, 0x32, 0x04, 0x0C, 0x16, 0x10, 0x0E, 0x29, 0x06, 0x0C, 0x05, 0x00,
-    0x0A, 0x00, 0x00, 0x00, 0x00, 0x0E, 0x29, 0x07, 0x2D, 0x00, 0x0E, 0x0C, 0x12, 0x16, 0x10, 0x0E, 0x29, 0x08, 0x00,
-    0x32, 0x02, 0x00, 0x1E, 0x0C, 0x0F, 0x29, 0x09, 0x0C, 0x12, 0x06, 0x00, 0x0C, 0x00, 0x00, 0x13, 0x00, 0x0C, 0x2F,
-    0x00, 0x00, 0x2E, 0x2D, 0x00, 0x29, 0x2D, 0x00, 0x0E, 0x11, 0x32, 0x02, 0x0C, 0x16, 0x10, 0x2D, 0x00, 0x0E, 0x0C,
-    0x12, 0x16, 0x10, 0x00, 0x00, 0x00,
+MsgScript D_80BC1464[] = {
+    /* 0x0000 0x05 */ MSCRIPT_BRANCH_ON_EVENT_INF(0x04, 0x08, 0x006F - 0x0005),
+    /* 0x0005 0x0D */
+    MSCRIPT_BRANCH_ON_DAY(0x0022 - 0x0012, 0x001A - 0x0012, 0x0022 - 0x0012, 0x001A - 0x0012, 0x0, 0x001A - 0x0012),
+    /* 0x0012 0x03 */ MSCRIPT_BEGIN_TEXT(0x2912),
+    /* 0x0015 0x03 */ MSCRIPT_NOTEBOOK_EVENT(BOMBERS_NOTEBOOK_EVENT_MET_ANJUS_GRANDMOTHER),
+    /* 0x0018 0x01 */ MSCRIPT_AWAIT_TEXT(),
+    /* 0x0019 0x01 */ MSCRIPT_DONE(),
+
+    /* 0x001A 0x03 */ MSCRIPT_BEGIN_TEXT(0x2901),
+    /* 0x001D 0x03 */ MSCRIPT_NOTEBOOK_EVENT(BOMBERS_NOTEBOOK_EVENT_MET_ANJUS_GRANDMOTHER),
+    /* 0x0020 0x01 */ MSCRIPT_AWAIT_TEXT(),
+    /* 0x0021 0x01 */ MSCRIPT_DONE(),
+
+    /* 0x0022 0x03 */ MSCRIPT_BEGIN_TEXT(0x2902),
+    /* 0x0025 0x01 */ MSCRIPT_AWAIT_TEXT(),
+    /* 0x0026 0x03 */ MSCRIPT_CONTINUE_TEXT(0x2903),
+    /* 0x0029 0x01 */ MSCRIPT_AWAIT_TEXT(),
+    /* 0x002A 0x07 */ MSCRIPT_BRANCH_ON_TEXT_CHOICE(0x0, 0x0037 - 0x0031, 0x0053 - 0x0031),
+    /* 0x0031 0x01 */ MSCRIPT_PLAY_CANCEL(),
+    /* 0x0032 0x03 */ MSCRIPT_NOTEBOOK_EVENT(BOMBERS_NOTEBOOK_EVENT_MET_ANJUS_GRANDMOTHER),
+    /* 0x0035 0x01 */ MSCRIPT_CLOSE_TEXT(),
+    /* 0x0036 0x01 */ MSCRIPT_DONE(),
+
+    /* 0x0037 0x01 */ MSCRIPT_PLAY_DECIDE(),
+    /* 0x0038 0x03 */ MSCRIPT_SET_EVENT_INF(0x04, 0x04),
+    /* 0x003B 0x03 */ MSCRIPT_BEGIN_TEXT(0x2904),
+    /* 0x003E 0x01 */ MSCRIPT_AWAIT_TEXT(),
+    /* 0x003F 0x05 */ MSCRIPT_BRANCH_ON_WORN_MASK(0x0003, 0x0048 - 0x0044),
+    /* 0x0044 0x01 */ MSCRIPT_PAUSE(),
+    /* 0x0045 0x03 */ MSCRIPT_BRANCH_ON_CALLBACK_OPTIONAL(0x010C - 0x0048),
+    /* 0x0048 0x03 */ MSCRIPT_BRANCH_ON_CALLBACK_OPTIONAL(0x0),
+    /* 0x004B 0x03 */ MSCRIPT_CONTINUE_TEXT(0x2905),
+    /* 0x004E 0x01 */ MSCRIPT_AWAIT_TEXT(),
+    /* 0x004F 0x01 */ MSCRIPT_PAUSE(),
+    /* 0x0050 0x03 */ MSCRIPT_BRANCH_ON_CALLBACK_OPTIONAL(0x010C - 0x0053),
+    /* 0x0053 0x01 */ MSCRIPT_PLAY_DECIDE(),
+    /* 0x0054 0x03 */ MSCRIPT_UNSET_EVENT_INF(0x04, 0x04),
+    /* 0x0057 0x03 */ MSCRIPT_BEGIN_TEXT(0x290B),
+    /* 0x005A 0x01 */ MSCRIPT_AWAIT_TEXT(),
+    /* 0x005B 0x05 */ MSCRIPT_BRANCH_ON_WORN_MASK(0x0003, 0x0064 - 0x0060),
+    /* 0x0060 0x01 */ MSCRIPT_PAUSE(),
+    /* 0x0061 0x03 */ MSCRIPT_BRANCH_ON_CALLBACK_OPTIONAL(0x010C - 0x0064),
+    /* 0x0064 0x03 */ MSCRIPT_BRANCH_ON_CALLBACK_OPTIONAL(0x0),
+    /* 0x0067 0x03 */ MSCRIPT_CONTINUE_TEXT(0x290C),
+    /* 0x006A 0x01 */ MSCRIPT_AWAIT_TEXT(),
+    /* 0x006B 0x01 */ MSCRIPT_PAUSE(),
+    /* 0x006C 0x03 */ MSCRIPT_BRANCH_ON_CALLBACK_OPTIONAL(0x010C - 0x006F),
+    /* 0x006F 0x05 */ MSCRIPT_BRANCH_ON_WORN_MASK(0x0003, 0x008B - 0x0074),
+    /* 0x0074 0x05 */ MSCRIPT_BRANCH_ON_EVENT_INF(0x04, 0x04, 0x0082 - 0x0079),
+    /* 0x0079 0x03 */ MSCRIPT_BEGIN_TEXT(0x2911),
+    /* 0x007C 0x03 */ MSCRIPT_NOTEBOOK_EVENT(BOMBERS_NOTEBOOK_EVENT_MET_ANJUS_GRANDMOTHER),
+    /* 0x007F 0x01 */ MSCRIPT_AWAIT_TEXT(),
+    /* 0x0080 0x01 */ MSCRIPT_CMD22(),
+    /* 0x0081 0x01 */ MSCRIPT_DONE(),
+
+    /* 0x0082 0x03 */ MSCRIPT_BEGIN_TEXT(0x290A),
+    /* 0x0085 0x03 */ MSCRIPT_NOTEBOOK_EVENT(BOMBERS_NOTEBOOK_EVENT_MET_ANJUS_GRANDMOTHER),
+    /* 0x0088 0x01 */ MSCRIPT_AWAIT_TEXT(),
+    /* 0x0089 0x01 */ MSCRIPT_CMD22(),
+    /* 0x008A 0x01 */ MSCRIPT_DONE(),
+
+    /* 0x008B 0x05 */ MSCRIPT_BRANCH_ON_EVENT_INF(0x04, 0x04, 0x00CB - 0x0090),
+    /* 0x0090 0x03 */ MSCRIPT_BEGIN_TEXT(0x290D),
+    /* 0x0093 0x01 */ MSCRIPT_AWAIT_TEXT(),
+    /* 0x0094 0x07 */ MSCRIPT_BRANCH_ON_TEXT_CHOICE(0x0, 0x00A5 - 0x009B, 0x0),
+    /* 0x009B 0x03 */ MSCRIPT_BEGIN_TEXT(0x2910),
+    /* 0x009E 0x03 */ MSCRIPT_NOTEBOOK_EVENT(BOMBERS_NOTEBOOK_EVENT_MET_ANJUS_GRANDMOTHER),
+    /* 0x00A1 0x01 */ MSCRIPT_AWAIT_TEXT(),
+    /* 0x00A2 0x01 */ MSCRIPT_CLOSE_TEXT(),
+    /* 0x00A3 0x01 */ MSCRIPT_CMD22(),
+    /* 0x00A4 0x01 */ MSCRIPT_DONE(),
+
+    /* 0x00A5 0x03 */ MSCRIPT_BEGIN_TEXT(0x290E),
+    /* 0x00A8 0x05 */ MSCRIPT_BRANCH_ON_WEEK_EVENT_REG(0x32, 0x04, 0x0106 - 0x00AD),
+    /* 0x00AD 0x01 */ MSCRIPT_AWAIT_TEXT(),
+    /* 0x00AE 0x03 */ MSCRIPT_CONTINUE_TEXT(0x290F),
+    /* 0x00B1 0x01 */ MSCRIPT_AWAIT_TEXT(),
+    /* 0x00B2 0x01 */ MSCRIPT_CLOSE_TEXT(),
+    /* 0x00B3 0x05 */ MSCRIPT_OFFER_ITEM(GI_HEART_PIECE, 0x0),
+    /* 0x00B8 0x03 */ MSCRIPT_COLLECT_SET(0x000C),
+    /* 0x00BB 0x03 */ MSCRIPT_JUMP_3(0x0),
+    /* 0x00BE 0x01 */ MSCRIPT_CMD46(),
+    /* 0x00BF 0x03 */ MSCRIPT_NOTEBOOK_EVENT(BOMBERS_NOTEBOOK_EVENT_RECEIVED_GRANDMA_LONG_STORY_HP),
+    /* 0x00C2 0x03 */ MSCRIPT_NOTEBOOK_EVENT(BOMBERS_NOTEBOOK_EVENT_MET_ANJUS_GRANDMOTHER),
+    /* 0x00C5 0x03 */ MSCRIPT_WEEK_EVENT_REG_SET(0x32, 0x04),
+    /* 0x00C8 0x01 */ MSCRIPT_AWAIT_TEXT(),
+    /* 0x00C9 0x01 */ MSCRIPT_CMD22(),
+    /* 0x00CA 0x01 */ MSCRIPT_DONE(),
+
+    /* 0x00CB 0x03 */ MSCRIPT_BEGIN_TEXT(0x2906),
+    /* 0x00CE 0x01 */ MSCRIPT_AWAIT_TEXT(),
+    /* 0x00CF 0x07 */ MSCRIPT_BRANCH_ON_TEXT_CHOICE(0x00E0 - 0x00D6, 0x0, 0x0),
+    /* 0x00D6 0x03 */ MSCRIPT_BEGIN_TEXT(0x2907),
+    /* 0x00D9 0x03 */ MSCRIPT_NOTEBOOK_EVENT(BOMBERS_NOTEBOOK_EVENT_MET_ANJUS_GRANDMOTHER),
+    /* 0x00DC 0x01 */ MSCRIPT_AWAIT_TEXT(),
+    /* 0x00DD 0x01 */ MSCRIPT_CLOSE_TEXT(),
+    /* 0x00DE 0x01 */ MSCRIPT_CMD22(),
+    /* 0x00DF 0x01 */ MSCRIPT_DONE(),
+
+    /* 0x00E0 0x03 */ MSCRIPT_BEGIN_TEXT(0x2908),
+    /* 0x00E3 0x05 */ MSCRIPT_BRANCH_ON_WEEK_EVENT_REG(0x32, 0x02, 0x0106 - 0x00E8),
+    /* 0x00E8 0x01 */ MSCRIPT_AWAIT_TEXT(),
+    /* 0x00E9 0x03 */ MSCRIPT_CONTINUE_TEXT(0x2909),
+    /* 0x00EC 0x01 */ MSCRIPT_AWAIT_TEXT(),
+    /* 0x00ED 0x01 */ MSCRIPT_CLOSE_TEXT(),
+    /* 0x00EE 0x05 */ MSCRIPT_OFFER_ITEM(GI_HEART_PIECE, 0x0),
+    /* 0x00F3 0x03 */ MSCRIPT_COLLECT_SET(0x000C),
+    /* 0x00F6 0x03 */ MSCRIPT_JUMP_3(0x0),
+    /* 0x00F9 0x01 */ MSCRIPT_CMD46(),
+    /* 0x00FA 0x03 */ MSCRIPT_NOTEBOOK_EVENT(BOMBERS_NOTEBOOK_EVENT_RECEIVED_GRANDMA_SHORT_STORY_HP),
+    /* 0x00FD 0x03 */ MSCRIPT_NOTEBOOK_EVENT(BOMBERS_NOTEBOOK_EVENT_MET_ANJUS_GRANDMOTHER),
+    /* 0x0100 0x03 */ MSCRIPT_WEEK_EVENT_REG_SET(0x32, 0x02),
+    /* 0x0103 0x01 */ MSCRIPT_AWAIT_TEXT(),
+    /* 0x0104 0x01 */ MSCRIPT_CMD22(),
+    /* 0x0105 0x01 */ MSCRIPT_DONE(),
+
+    /* 0x0106 0x03 */ MSCRIPT_NOTEBOOK_EVENT(BOMBERS_NOTEBOOK_EVENT_MET_ANJUS_GRANDMOTHER),
+    /* 0x0109 0x01 */ MSCRIPT_AWAIT_TEXT(),
+    /* 0x010A 0x01 */ MSCRIPT_CLOSE_TEXT(),
+    /* 0x010B 0x01 */ MSCRIPT_CMD22(),
+    /* 0x010C 0x01 */ MSCRIPT_DONE(),
 };
 
-u8 D_80BC1574[] = {
-    0x09, 0x00, 0x00, 0x0E, 0x28, 0xC7, 0x0C, 0x09, 0x00, 0x00, 0x17, 0x0E, 0x28, 0xC8, 0x0C, 0x09, 0x00,
-    0x00, 0x18, 0x0E, 0x28, 0xC9, 0x0C, 0x09, 0x00, 0x00, 0x17, 0x0E, 0x28, 0xCA, 0x0C, 0x09, 0x00, 0x00,
-    0x18, 0x0E, 0x28, 0xCB, 0x0C, 0x09, 0x00, 0x00, 0x17, 0x0E, 0x28, 0xCC, 0x0C, 0x09, 0x00, 0x00, 0x18,
-    0x0E, 0x28, 0xCD, 0x0C, 0x09, 0x00, 0x00, 0x17, 0x0E, 0x28, 0xCE, 0x0C, 0x09, 0x00, 0x00, 0x18, 0x0E,
-    0x28, 0xCF, 0x2D, 0x00, 0x01, 0x2D, 0x00, 0x0E, 0x0C, 0x09, 0x00, 0x00, 0x10, 0x00, 0x00, 0x00,
+MsgScript D_80BC1574[] = {
+    /* 0x0000 0x03 */ MSCRIPT_BRANCH_ON_CALLBACK_OPTIONAL(0x0),
+    /* 0x0003 0x03 */ MSCRIPT_BEGIN_TEXT(0x28C7),
+    /* 0x0006 0x01 */ MSCRIPT_AWAIT_TEXT(),
+    /* 0x0007 0x03 */ MSCRIPT_BRANCH_ON_CALLBACK_OPTIONAL(0x0),
+    /* 0x000A 0x01 */ MSCRIPT_FOCUS_TO_CHILD(),
+    /* 0x000B 0x03 */ MSCRIPT_BEGIN_TEXT(0x28C8),
+    /* 0x000E 0x01 */ MSCRIPT_AWAIT_TEXT(),
+    /* 0x000F 0x03 */ MSCRIPT_BRANCH_ON_CALLBACK_OPTIONAL(0x0),
+    /* 0x0012 0x01 */ MSCRIPT_FOCUS_TO_SELF(),
+    /* 0x0013 0x03 */ MSCRIPT_BEGIN_TEXT(0x28C9),
+    /* 0x0016 0x01 */ MSCRIPT_AWAIT_TEXT(),
+    /* 0x0017 0x03 */ MSCRIPT_BRANCH_ON_CALLBACK_OPTIONAL(0x0),
+    /* 0x001A 0x01 */ MSCRIPT_FOCUS_TO_CHILD(),
+    /* 0x001B 0x03 */ MSCRIPT_BEGIN_TEXT(0x28CA),
+    /* 0x001E 0x01 */ MSCRIPT_AWAIT_TEXT(),
+    /* 0x001F 0x03 */ MSCRIPT_BRANCH_ON_CALLBACK_OPTIONAL(0x0),
+    /* 0x0022 0x01 */ MSCRIPT_FOCUS_TO_SELF(),
+    /* 0x0023 0x03 */ MSCRIPT_BEGIN_TEXT(0x28CB),
+    /* 0x0026 0x01 */ MSCRIPT_AWAIT_TEXT(),
+    /* 0x0027 0x03 */ MSCRIPT_BRANCH_ON_CALLBACK_OPTIONAL(0x0),
+    /* 0x002A 0x01 */ MSCRIPT_FOCUS_TO_CHILD(),
+    /* 0x002B 0x03 */ MSCRIPT_BEGIN_TEXT(0x28CC),
+    /* 0x002E 0x01 */ MSCRIPT_AWAIT_TEXT(),
+    /* 0x002F 0x03 */ MSCRIPT_BRANCH_ON_CALLBACK_OPTIONAL(0x0),
+    /* 0x0032 0x01 */ MSCRIPT_FOCUS_TO_SELF(),
+    /* 0x0033 0x03 */ MSCRIPT_BEGIN_TEXT(0x28CD),
+    /* 0x0036 0x01 */ MSCRIPT_AWAIT_TEXT(),
+    /* 0x0037 0x03 */ MSCRIPT_BRANCH_ON_CALLBACK_OPTIONAL(0x0),
+    /* 0x003A 0x01 */ MSCRIPT_FOCUS_TO_CHILD(),
+    /* 0x003B 0x03 */ MSCRIPT_BEGIN_TEXT(0x28CE),
+    /* 0x003E 0x01 */ MSCRIPT_AWAIT_TEXT(),
+    /* 0x003F 0x03 */ MSCRIPT_BRANCH_ON_CALLBACK_OPTIONAL(0x0),
+    /* 0x0042 0x01 */ MSCRIPT_FOCUS_TO_SELF(),
+    /* 0x0043 0x03 */ MSCRIPT_BEGIN_TEXT(0x28CF),
+    /* 0x0046 0x03 */ MSCRIPT_NOTEBOOK_EVENT(BOMBERS_NOTEBOOK_EVENT_MET_ANJU),
+    /* 0x0049 0x03 */ MSCRIPT_NOTEBOOK_EVENT(BOMBERS_NOTEBOOK_EVENT_MET_ANJUS_GRANDMOTHER),
+    /* 0x004C 0x01 */ MSCRIPT_AWAIT_TEXT(),
+    /* 0x004D 0x03 */ MSCRIPT_BRANCH_ON_CALLBACK_OPTIONAL(0x0),
+    /* 0x0050 0x01 */ MSCRIPT_DONE(),
 };
 
-u8 D_80BC15C8[] = {
-    0x0E, 0x23, 0x62, 0x2D, 0x00, 0x0E, 0x0C, 0x10,
+MsgScript D_80BC15C8[] = {
+    /* 0x0000 0x03 */ MSCRIPT_BEGIN_TEXT(0x2362),
+    /* 0x0003 0x03 */ MSCRIPT_NOTEBOOK_EVENT(BOMBERS_NOTEBOOK_EVENT_MET_ANJUS_GRANDMOTHER),
+    /* 0x0006 0x01 */ MSCRIPT_AWAIT_TEXT(),
+    /* 0x0007 0x01 */ MSCRIPT_DONE(),
 };
 
 ActorInit En_Nb_InitVars = {
@@ -141,6 +284,15 @@ static ColliderCylinderInit sCylinderInit = {
 
 static CollisionCheckInfoInit2 sColChkInfoInit = { 0, 0, 0, 0, MASS_IMMOVABLE };
 
+static AnimationInfoS sAnimationInfo[] = {
+    { &gNbIdleAnim, 1.0f, 0, -1, ANIMMODE_LOOP, 0 },      // EN_NB_ANIM_0
+    { &gNbIdleAnim, 1.0f, 0, -1, ANIMMODE_LOOP, -4 },     // EN_NB_ANIM_1
+    { &gNbTalkAnim, 1.0f, 0, -1, ANIMMODE_ONCE, 0 },      // EN_NB_ANIM_TALK_ONCE
+    { &gNbTalkAnim, 1.0f, 0, -1, ANIMMODE_LOOP, -4 },     // EN_NB_ANIM_TALK_LOOP
+    { &gNbAngryAnim, 1.0f, 0, -1, ANIMMODE_LOOP, -4 },    // EN_NB_ANIM_ANGRY
+    { &gNbRelievedAnim, 1.0f, 0, -1, ANIMMODE_ONCE, -4 }, // EN_NB_ANIM_RELIEVED
+};
+
 Actor* EnNb_FindActor(EnNb* this, PlayState* play, u8 actorCategory, s16 actorId) {
     Actor* thisx;
     Actor* actor = NULL;
@@ -172,34 +324,25 @@ void EnNb_UpdateSkelAnime(EnNb* this) {
     SkelAnime_Update(&this->skelAnime);
 }
 
-static AnimationInfoS sAnimationInfo[EN_NB_ANIM_MAX] = {
-    { &gNbIdleAnim, 1.0f, 0, -1, ANIMMODE_LOOP, 0 },      // EN_NB_ANIM_0
-    { &gNbIdleAnim, 1.0f, 0, -1, ANIMMODE_LOOP, -4 },     // EN_NB_ANIM_1
-    { &gNbTalkAnim, 1.0f, 0, -1, ANIMMODE_ONCE, 0 },      // EN_NB_ANIM_TALK_ONCE
-    { &gNbTalkAnim, 1.0f, 0, -1, ANIMMODE_LOOP, -4 },     // EN_NB_ANIM_TALK_LOOP
-    { &gNbAngryAnim, 1.0f, 0, -1, ANIMMODE_LOOP, -4 },    // EN_NB_ANIM_ANGRY
-    { &gNbRelievedAnim, 1.0f, 0, -1, ANIMMODE_ONCE, -4 }, // EN_NB_ANIM_RELIEVED
-};
-
 s32 EnNb_ChangeAnim(EnNb* this, EnNbAnimation animIndex) {
-    s32 changeAnim = false;
-    s32 didAnimChange = false;
+    s32 shouldChange = false;
+    s32 didAnimationChange = false;
 
     if ((animIndex == EN_NB_ANIM_0) || (animIndex == EN_NB_ANIM_1)) {
         if ((this->animIndex != EN_NB_ANIM_0) && (this->animIndex != EN_NB_ANIM_1)) {
-            changeAnim = true;
+            shouldChange = true;
         }
     } else if (animIndex != this->animIndex) {
-        changeAnim = true;
+        shouldChange = true;
     }
 
-    if (changeAnim) {
+    if (shouldChange) {
         this->animIndex = animIndex;
-        didAnimChange = SubS_ChangeAnimationByInfoS(&this->skelAnime, sAnimationInfo, animIndex);
+        didAnimationChange = SubS_ChangeAnimationByInfoS(&this->skelAnime, sAnimationInfo, animIndex);
         this->animPlaySpeed = this->skelAnime.playSpeed;
     }
 
-    return didAnimChange;
+    return didAnimationChange;
 }
 
 void func_80BBFF24(EnNb* this, PlayState* play) {
@@ -301,9 +444,6 @@ s32 func_80BC00AC(Actor* thisx, PlayState* play) {
             this->behaviour++;
             ret = true;
             break;
-
-        default:
-            break;
     }
 
     return ret;
@@ -336,11 +476,14 @@ s32 func_80BC01DC(Actor* thisx, PlayState* play) {
 
             if (this->storyTimer == 20) {
                 if (CHECK_EVENTINF(EVENTINF_42)) {
-                    play->interfaceCtx.storyType = STORY_TYPE_MASK_FESTIVAL;
+                    // play->interfaceCtx.storyType = STORY_TYPE_MASK_FESTIVAL;
+                    play->interfaceCtx.storyType = 0;
                 } else {
-                    play->interfaceCtx.storyType = STORY_TYPE_GIANTS_LEAVING;
+                    // play->interfaceCtx.storyType = STORY_TYPE_GIANTS_LEAVING;
+                    play->interfaceCtx.storyType = 1;
                 }
-                play->interfaceCtx.storyState = STORY_STATE_FADE_IN;
+                // play->interfaceCtx.storyState = STORY_STATE_FADE_IN;
+                play->interfaceCtx.storyState = 6;
                 R_STORY_FILL_SCREEN_ALPHA = 255;
             }
 
@@ -350,13 +493,15 @@ s32 func_80BC01DC(Actor* thisx, PlayState* play) {
             break;
 
         case ENNB_BEHAVIOUR_3:
-            play->interfaceCtx.storyState = STORY_STATE_SETUP_IDLE;
+            // play->interfaceCtx.storyState = STORY_STATE_SETUP_IDLE;
+            play->interfaceCtx.storyState = 4;
             this->behaviour++;
             ret = true;
             break;
 
         case ENNB_BEHAVIOUR_4:
-            play->interfaceCtx.storyState = STORY_STATE_FADE_OUT;
+            // play->interfaceCtx.storyState = STORY_STATE_FADE_OUT;
+            play->interfaceCtx.storyState = 5;
             this->behaviour++;
             // fallthrough
         case ENNB_BEHAVIOUR_5:
@@ -375,15 +520,12 @@ s32 func_80BC01DC(Actor* thisx, PlayState* play) {
             gSaveContext.nextTransitionType = TRANS_TYPE_FADE_BLACK_SLOW;
             SET_EVENTINF(EVENTINF_43);
             break;
-
-        default:
-            break;
     }
 
     return ret;
 }
 
-u8* func_80BC045C(EnNb* this, PlayState* play) {
+MsgScript* func_80BC045C(EnNb* this, PlayState* play) {
     if (CHECK_EVENTINF(EVENTINF_43)) {
         this->msgEventCallback = func_80BC01DC;
         return D_80BC1464;
@@ -402,7 +544,7 @@ s32 func_80BC04FC(EnNb* this, PlayState* play) {
     s32 ret = false;
 
     if (((this->stateFlags & SUBS_OFFER_MODE_MASK) != SUBS_OFFER_MODE_NONE) &&
-        Actor_TalkOfferAccepted(&this->actor, &play->state)) {
+        Actor_ProcessTalkRequest(&this->actor, &play->state)) {
         this->stateFlags |= EN_NB_FLAG_20;
         SubS_SetOfferMode(&this->stateFlags, SUBS_OFFER_MODE_NONE, SUBS_OFFER_MODE_MASK);
         this->behaviour = ENNB_BEHAVIOUR_0;
@@ -528,8 +670,8 @@ s32 func_80BC0A18(EnNb* this, PlayState* play) {
                     EnNb_ChangeAnim(this, EN_NB_ANIM_TALK_LOOP);
                     break;
 
-                case 0x2904:
-                case 0x290B:
+                case 0x2904: // "You want to hear the carnival of time story? ..."
+                case 0x290B: // "You want to hear the four giants story? ..."
                     this->unk_18C = func_80BC08E0;
                     this->unk_284 = 0;
                     break;
@@ -539,7 +681,7 @@ s32 func_80BC0A18(EnNb* this, PlayState* play) {
                     this->unk_284 = 0;
                     break;
 
-                case 0x28CB:
+                case 0x28CB: // "I told you I already ate!"
                     EnNb_ChangeAnim(this, EN_NB_ANIM_ANGRY);
                     break;
 
@@ -550,9 +692,6 @@ s32 func_80BC0A18(EnNb* this, PlayState* play) {
                 case 0x290D:
                 case 0x2912:
                     EnNb_ChangeAnim(this, EN_NB_ANIM_TALK_LOOP);
-                    break;
-
-                default:
                     break;
             }
         }
@@ -605,6 +744,10 @@ s32 EnNb_ProcessScheduleOutput(EnNb* this, PlayState* play, ScheduleOutput* sche
     this->unk_274 = 40.0f;
 
     switch (scheduleOutput->result) {
+        default:
+            success = false;
+            break;
+
         case EN_NB_SCH_1:
         case EN_NB_SCH_3:
         case EN_NB_SCH_4:
@@ -613,10 +756,6 @@ s32 EnNb_ProcessScheduleOutput(EnNb* this, PlayState* play, ScheduleOutput* sche
 
         case EN_NB_SCH_2:
             success = func_80BC0B98(this, play, scheduleOutput);
-            break;
-
-        default:
-            success = false;
             break;
     }
     return success;
@@ -662,7 +801,7 @@ void EnNb_FollowSchedule(EnNb* this, PlayState* play) {
 }
 
 void func_80BC0EAC(EnNb* this, PlayState* play) {
-    if (func_8010BF58(&this->actor, play, this->msgEventScript, this->msgEventCallback, &this->msgEventArg4)) {
+    if (MsgEvent_RunScript(&this->actor, play, this->msgEventScript, this->msgEventCallback, &this->msgEventArg4)) {
         if (CHECK_EVENTINF(EVENTINF_43)) {
             CLEAR_EVENTINF(EVENTINF_42);
             CLEAR_EVENTINF(EVENTINF_43);
@@ -710,7 +849,7 @@ void EnNb_Destroy(Actor* thisx, PlayState* play) {
     EnNb* this = THIS;
 
     Collider_DestroyCylinder(play, &this->collider);
-    play->interfaceCtx.storyState = STORY_STATE_DESTROY;
+    play->interfaceCtx.storyState = 3;
 }
 
 void EnNb_Update(Actor* thisx, PlayState* play) {

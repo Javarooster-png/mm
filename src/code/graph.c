@@ -1,4 +1,3 @@
-#include "prevent_bss_reordering.h"
 #include "z64.h"
 #include "regs.h"
 #include "functions.h"
@@ -95,7 +94,7 @@ GameStateOverlay* Graph_GetNextGameState(GameState* gameState) {
 uintptr_t Graph_FaultAddrConv(uintptr_t address, void* param) {
     uintptr_t addr = address;
     GameStateOverlay* gameStateOvl = &gGameStateOverlayTable[0];
-    uintptr_t ramConv;
+    size_t ramConv;
     void* ramStart;
     size_t diff;
     s32 i;

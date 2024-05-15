@@ -248,25 +248,24 @@ void EnSyatekiMan_Destroy(Actor* thisx, PlayState* play) {
  * Moves the player to the destination through automated control stick movements.
  * This is used to move the player to the right place to play the shooting game.
  */
-s32 EnSyatekiMan_MovePlayerToPos(PlayState* play, Vec3f targetPos) {
+s32 EnSyatekiMan_MovePlayerToPos(PlayState* play, Vec3f pos) {
     Player* player = GET_PLAYER(play);
     f32 distXZ;
-    f32 controlStickMagnitude;
-    s16 controlStickAngle;
+    f32 magnitude;
+    s16 yaw = Math_Vec3f_Yaw(&player->actor.world.pos, &pos);
 
-    controlStickAngle = Math_Vec3f_Yaw(&player->actor.world.pos, &targetPos);
-    distXZ = Math_Vec3f_DistXZ(&player->actor.world.pos, &targetPos);
+    distXZ = Math_Vec3f_DistXZ(&player->actor.world.pos, &pos);
 
     if (distXZ < 5.0f) {
-        controlStickMagnitude = 10.0f;
+        magnitude = 10.0f;
     } else if (distXZ < 30.0f) {
-        controlStickMagnitude = 40.0f;
+        magnitude = 40.0f;
     } else {
-        controlStickMagnitude = 80.0f;
+        magnitude = 80.0f;
     }
 
-    play->actorCtx.isOverrideInputOn = true;
-    Actor_SetControlStickData(play, &play->actorCtx.overrideInput, controlStickMagnitude, controlStickAngle);
+    play->actorCtx.unk268 = 1;
+    func_800B6F20(play, &play->actorCtx.unk_26C, magnitude, yaw);
 
     if (distXZ < 5.0f) {
         return true;
@@ -286,7 +285,7 @@ void EnSyatekiMan_SetupIdle(EnSyatekiMan* this, PlayState* play) {
 void EnSyatekiMan_Swamp_Idle(EnSyatekiMan* this, PlayState* play) {
     Player* player = GET_PLAYER(play);
 
-    if (Actor_TalkOfferAccepted(&this->actor, &play->state)) {
+    if (Actor_ProcessTalkRequest(&this->actor, &play->state)) {
         u16 faceReactionTextId;
 
         Actor_ChangeAnimationByInfo(&this->skelAnime, sAnimationInfo, SG_MAN_ANIM_HEAD_SCRATCH_END);
@@ -421,7 +420,7 @@ void EnSyatekiMan_Swamp_HandleNormalMessage(EnSyatekiMan* this, PlayState* play)
                 player->actor.freezeTimer = 0;
                 Interface_InitMinigame(play);
                 play->interfaceCtx.minigameAmmo = 80;
-                func_80123F2C(play, 80);
+                Player_SetBButtonAmmo(play, 80);
                 this->shootingGameState = SG_GAME_STATE_RUNNING;
                 this->actionFunc = EnSyatekiMan_Swamp_StartGame;
                 Audio_PlaySubBgm(NA_BGM_TIMED_MINI_GAME);
@@ -618,7 +617,7 @@ void EnSyatekiMan_Town_StartIntroTextbox(EnSyatekiMan* this, PlayState* play) {
 }
 
 void EnSyatekiMan_Town_Idle(EnSyatekiMan* this, PlayState* play) {
-    if (Actor_TalkOfferAccepted(&this->actor, &play->state)) {
+    if (Actor_ProcessTalkRequest(&this->actor, &play->state)) {
         u16 faceReactionTextId = Text_GetFaceReaction(play, FACE_REACTION_SET_TOWN_SHOOTING_GALLERY_MAN);
 
         if (faceReactionTextId != 0) {
@@ -783,7 +782,7 @@ void EnSyatekiMan_Town_HandleNormalMessage(EnSyatekiMan* this, PlayState* play) 
                 player->actor.freezeTimer = 0;
                 this->flagsIndex = 0;
                 Interface_InitMinigame(play);
-                func_80123F2C(play, 0x63);
+                Player_SetBButtonAmmo(play, 99);
                 this->shootingGameState = SG_GAME_STATE_RUNNING;
                 Audio_PlaySubBgm(NA_BGM_TIMED_MINI_GAME);
                 this->actionFunc = EnSyatekiMan_Town_StartGame;
@@ -916,7 +915,7 @@ void EnSyatekiMan_Swamp_SetupGiveReward(EnSyatekiMan* this, PlayState* play) {
 void EnSyatekiMan_Swamp_GiveReward(EnSyatekiMan* this, PlayState* play) {
     Player* player = GET_PLAYER(play);
 
-    if (Actor_TalkOfferAccepted(&this->actor, &play->state)) {
+    if (Actor_ProcessTalkRequest(&this->actor, &play->state)) {
         if ((CURRENT_DAY == 3) && (gSaveContext.save.time > CLOCK_TIME(12, 0))) {
             // We've been having a lot of earthquakes lately.
             Message_StartTextbox(play, 0xA36, &this->actor);
@@ -988,7 +987,7 @@ void EnSyatekiMan_Town_GiveReward(EnSyatekiMan* this, PlayState* play) {
             CLEAR_WEEKEVENTREG(WEEKEVENTREG_KICKOUT_TIME_PASSED);
             this->actionFunc = EnSyatekiMan_SetupIdle;
         }
-    } else if (Actor_TalkOfferAccepted(&this->actor, &play->state)) {
+    } else if (Actor_ProcessTalkRequest(&this->actor, &play->state)) {
         // This may be our last day in business...
         Message_StartTextbox(play, 0x408, &this->actor);
         this->prevTextId = 0x408;
@@ -1181,7 +1180,7 @@ void EnSyatekiMan_Swamp_EndGame(EnSyatekiMan* this, PlayState* play) {
     }
 
     if (this->talkWaitTimer < 5) {
-        play->unk_1887C = -10;
+        play->bButtonAmmoPlusOne = -10;
     }
 }
 
@@ -1454,7 +1453,7 @@ void EnSyatekiMan_Town_EndGame(EnSyatekiMan* this, PlayState* play) {
     }
 
     if (this->talkWaitTimer < 5) {
-        play->unk_1887C = -10;
+        play->bButtonAmmoPlusOne = -10;
     }
 }
 

@@ -242,7 +242,7 @@ s32 EnJg_ReachedPoint(EnJg* this, Path* path, s32 pointIndex) {
         diffZ = points[currentPoint + 1].z - points[currentPoint - 1].z;
     }
 
-    func_8017B7F8(&point, RAD_TO_BINANG(Math_FAtan2F(diffX, diffZ)), &px, &pz, &d);
+    Math3D_RotateXZPlane(&point, RAD_TO_BINANG(Math_FAtan2F(diffX, diffZ)), &px, &pz, &d);
 
     if (((this->actor.world.pos.x * px) + (pz * this->actor.world.pos.z) + d) > 0.0f) {
         reached = true;
@@ -351,7 +351,7 @@ void EnJg_Idle(EnJg* this, PlayState* play) {
 }
 
 void EnJg_GoronShrineIdle(EnJg* this, PlayState* play) {
-    if (Actor_TalkOfferAccepted(&this->actor, &play->state)) {
+    if (Actor_ProcessTalkRequest(&this->actor, &play->state)) {
         this->flags |= FLAG_LOOKING_AT_PLAYER;
         Message_StartTextbox(play, this->textId, &this->actor);
         this->actionFunc = EnJg_GoronShrineTalk;
@@ -594,7 +594,7 @@ void EnJg_FrozenIdle(EnJg* this, PlayState* play) {
             }
         }
     } else {
-        if (Actor_TalkOfferAccepted(&this->actor, &play->state)) {
+        if (Actor_ProcessTalkRequest(&this->actor, &play->state)) {
             Message_StartTextbox(play, 0x236, &this->actor); // The old Goron is frozen solid!
             this->actionFunc = EnJg_EndFrozenInteraction;
         } else if (this->actor.isLockedOn) {
@@ -904,7 +904,7 @@ void EnJg_CheckIfTalkingToPlayerAndHandleFreezeTimer(EnJg* this, PlayState* play
     s16 curFrame = this->skelAnime.curFrame;
     s16 endFrame = Animation_GetLastFrame(sAnimationInfo[this->animIndex].animation);
 
-    if (Actor_TalkOfferAccepted(&this->actor, &play->state)) {
+    if (Actor_ProcessTalkRequest(&this->actor, &play->state)) {
         this->flags |= FLAG_LOOKING_AT_PLAYER;
         this->actor.speed = 0.0f;
 

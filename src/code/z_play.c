@@ -1,4 +1,3 @@
-#include "prevent_bss_reordering.h"
 #include "z64.h"
 #include "regs.h"
 #include "functions.h"
@@ -964,17 +963,16 @@ void Play_UpdateMain(PlayState* this) {
         Play_UpdateTransition(this);
 
         if (gTransitionTileState != TRANS_TILE_READY) {
-            if ((gSaveContext.gameMode == GAMEMODE_NORMAL) &&
-                (((this->msgCtx.msgMode == MSGMODE_NONE)) ||
-                 ((this->msgCtx.currentTextId == 0xFF) && (this->msgCtx.msgMode == MSGMODE_TEXT_DONE) &&
-                  (this->msgCtx.textboxEndType == TEXTBOX_ENDTYPE_41)) ||
-                 ((this->msgCtx.currentTextId >= 0x100) && (this->msgCtx.currentTextId <= 0x200))) &&
+            if (((gSaveContext.gameMode == GAMEMODE_NORMAL) &&
+                 (((this->msgCtx.msgMode == MSGMODE_NONE) ||
+                   (((this->msgCtx.currentTextId == 0xFF) && (this->msgCtx.msgMode == MSGMODE_TEXT_DONE)) &&
+                    (this->msgCtx.textboxEndType == TEXTBOX_ENDTYPE_41))) ||
+                  ((this->msgCtx.currentTextId >= 0x100) && (this->msgCtx.currentTextId <= 0x200)))) &&
                 (this->gameOverCtx.state == GAMEOVER_INACTIVE)) {
                 KaleidoSetup_Update(this);
             }
 
             sp5C = (this->pauseCtx.state != 0) || (this->pauseCtx.debugEditor != DEBUG_EDITOR_NONE);
-
             AnimationContext_Reset(&this->animationCtx);
             Object_UpdateEntries(&this->objectCtx);
 
@@ -982,7 +980,7 @@ void Play_UpdateMain(PlayState* this) {
                 this->gameplayFrames++;
                 Rumble_SetUpdateEnabled(true);
 
-                if ((this->actorCtx.freezeFlashTimer != 0) && (this->actorCtx.freezeFlashTimer-- < 5)) {
+                if ((this->actorCtx.freezeFlashTimer != 0) && ((this->actorCtx.freezeFlashTimer--) < 5)) {
                     freezeFlashTimer = this->actorCtx.freezeFlashTimer;
                     if ((freezeFlashTimer > 0) && ((freezeFlashTimer % 2) != 0)) {
                         this->envCtx.fillScreen = true;
@@ -1512,7 +1510,7 @@ void Play_Main(GameState* thisx) {
     CutsceneManager_ClearWaiting();
 }
 
-bool Play_InCsMode(PlayState* this) {
+s32 Play_InCsMode(PlayState* this) {
     return (this->csCtx.state != CS_STATE_IDLE) || Player_InCsMode(this);
 }
 
@@ -1577,7 +1575,7 @@ void Play_InitScene(PlayState* this, s32 spawn) {
     this->numSetupActors = 0;
     Object_InitContext(&this->state, &this->objectCtx);
     LightContext_Init(this, &this->lightCtx);
-    Door_InitContext(&this->state, &this->doorCtx);
+    Scene_ResetTransitionActorList(&this->state, &this->transitionActors);
     Room_Init(this, &this->roomCtx);
     gSaveContext.worldMapArea = 0;
     Scene_ExecuteCommands(this, this->sceneSegment);
@@ -1683,7 +1681,7 @@ s32 Play_SetCameraAtEye(PlayState* this, s16 camId, Vec3f* at, Vec3f* eye) {
     successfullySet <<= 1;
     successfullySet |= Camera_SetViewParam(camera, CAM_VIEW_EYE, eye);
 
-    camera->dist = Math3D_Distance(at, eye);
+    camera->dist = Math3D_Vec3f_DistXYZ(at, eye);
 
     if (camera->focalActor != NULL) {
         camera->focalActorAtOffset.x = at->x - camera->focalActor->world.pos.x;
@@ -1712,7 +1710,7 @@ s32 Play_SetCameraAtEyeUp(PlayState* this, s16 camId, Vec3f* at, Vec3f* eye, Vec
     successfullySet <<= 1;
     successfullySet |= Camera_SetViewParam(camera, CAM_VIEW_UP, up);
 
-    camera->dist = Math3D_Distance(at, eye);
+    camera->dist = Math3D_Vec3f_DistXYZ(at, eye);
 
     if (camera->focalActor != NULL) {
         camera->focalActorAtOffset.x = at->x - camera->focalActor->world.pos.x;
@@ -1977,7 +1975,7 @@ s32 func_8016A02C(GameState* thisx, Actor* actor, s16* yaw) {
         return false;
     }
 
-    transitionActor = &this->doorCtx.transitionActorList[(u16)actor->params >> 10];
+    transitionActor = &this->transitionActors.list[(u16)actor->params >> 10];
     frontRoom = transitionActor->sides[0].room;
     if (frontRoom == transitionActor->sides[1].room) {
         return false;

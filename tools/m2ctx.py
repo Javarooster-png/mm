@@ -82,6 +82,7 @@ def import_c_file(in_file) -> str:
         stock_macros = subprocess.check_output(["gcc", "-E", "-P", "-undef", "-dM", tmp.name], cwd=root_dir, encoding="utf-8")
 
     out_text = ""
+
     try:
         out_text += subprocess.check_output(cpp_command, cwd=root_dir, encoding="utf-8")
         out_text += subprocess.check_output(cpp_command2, cwd=root_dir, encoding="utf-8")

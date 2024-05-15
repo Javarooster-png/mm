@@ -289,7 +289,7 @@ void func_80AECA3C(EnTk* this, PlayState* play) {
 }
 
 void func_80AECA90(EnTk* this, PlayState* play) {
-    if (Actor_TalkOfferAccepted(&this->actor, &play->state)) {
+    if (Actor_ProcessTalkRequest(&this->actor, &play->state)) {
         play->msgCtx.msgMode = MSGMODE_NONE;
         play->msgCtx.msgLength = 0;
         func_80AEDE10(this, play);
@@ -316,7 +316,7 @@ void func_80AECB6C(EnTk* this, PlayState* play) {
     u8 temp4;
 
     this->actor.textId = 0;
-    if (Actor_TalkOfferAccepted(&this->actor, &play->state)) {
+    if (Actor_ProcessTalkRequest(&this->actor, &play->state)) {
         play->msgCtx.msgMode = MSGMODE_NONE;
         play->msgCtx.msgLength = 0;
         func_80AED4F8(this, play);
@@ -688,7 +688,7 @@ void func_80AED940(EnTk* this, PlayState* play) {
         } while (actor != NULL);
     }
 
-    if (Actor_TalkOfferAccepted(&this->actor, &play->state)) {
+    if (Actor_ProcessTalkRequest(&this->actor, &play->state)) {
         this->unk_2CA &= ~0x80;
         this->actor.flags &= ~ACTOR_FLAG_10000;
         play->msgCtx.msgMode = MSGMODE_NONE;
@@ -1297,8 +1297,8 @@ void EnTk_Update(Actor* thisx, PlayState* play) {
 
         if (platform != NULL) {
             if (platform->dyna.actor.id == ACTOR_BG_DANPEI_MOVEBG) {
-                platform->unk_1CC |= 1;
-                if (platform->unk_1CC & 2) {
+                platform->flags |= 1;
+                if (platform->flags & 2) {
                     this->unk_2CA |= 1;
                 }
             }

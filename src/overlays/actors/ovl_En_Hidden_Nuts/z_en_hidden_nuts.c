@@ -132,7 +132,7 @@ void EnHiddenNuts_Init(Actor* thisx, PlayState* play) {
 
     this->path = SubS_GetPathByIndex(play, this->pathIndex, ENHIDDENNUTS_PATH_INDEX_NONE_ALT);
     this->csId = this->actor.csId;
-    AudioVoice_InitWord(VOICE_WORD_ID_WAKE_UP);
+    func_801A5080(VOICE_WORD_ID_WAKE_UP);
     func_80BDB268(this);
 }
 
@@ -184,7 +184,7 @@ void func_80BDB2B8(EnHiddenNuts* this, PlayState* play) {
         this->unk_20A = false;
     }
 
-    if (Actor_TalkOfferAccepted(&this->actor, &play->state)) {
+    if (Actor_ProcessTalkRequest(&this->actor, &play->state)) {
         func_80BDB580(this);
         return;
     }

@@ -170,7 +170,7 @@ s32 func_8089F908(EnBubble* this) {
 void EnBubble_Vec3fNormalizedReflect(Vec3f* vec1, Vec3f* vec2, Vec3f* dest) {
     f32 norm;
 
-    func_80179F64(vec1, vec2, dest);
+    Math3D_Vec3fReflect(vec1, vec2, dest);
     norm = sqrtf(SQ(dest->x) + SQ(dest->y) + SQ(dest->z));
     if (norm != 0.0f) {
         dest->x /= norm;
@@ -333,8 +333,7 @@ void EnBubble_Init(Actor* thisx, PlayState* play) {
     Collider_InitJntSph(play, &this->colliderSphere);
     Collider_SetJntSph(play, &this->colliderSphere, &this->actor, &sJntSphInit, this->colliderElements);
     CollisionCheck_SetInfo2(&this->actor.colChkInfo, DamageTable_Get(9), &sColChkInfoInit);
-    //! @bug: hint Id not correctly migrated from OoT `NAVI_ENEMY_SHABOM`
-    this->actor.hintId = TATL_HINT_ID_IGOS_DU_IKANA;
+    this->actor.hintId = 0x16;
     this->bounceDirection.x = Rand_ZeroOne();
     this->bounceDirection.y = Rand_ZeroOne();
     this->bounceDirection.z = Rand_ZeroOne();

@@ -1746,8 +1746,7 @@ s32* EnAn_GetMsgEventScript(EnAn* this, PlayState* play) {
 s32 EnAn_CheckTalk(EnAn* this, PlayState* play) {
     s32 ret = false;
 
-    if (((this->stateFlags & SUBS_OFFER_MODE_MASK) != SUBS_OFFER_MODE_NONE) &&
-        Actor_TalkOfferAccepted(&this->actor, &play->state)) {
+    if ((this->stateFlags & SUBS_OFFER_MODE_MASK) && Actor_ProcessTalkRequest(&this->actor, &play->state)) {
         SubS_SetOfferMode(&this->stateFlags, SUBS_OFFER_MODE_NONE, SUBS_OFFER_MODE_MASK);
         this->unk_3C4 = 0;
         this->msgEventState = 0;
@@ -3221,7 +3220,7 @@ void EnAn_FollowSchedule(EnAn* this, PlayState* play) {
 }
 
 void EnAn_Talk(EnAn* this, PlayState* play) {
-    if (func_8010BF58(&this->actor, play, this->msgEventScript, this->msgEventFunc, &this->msgScriptResumePos)) {
+    if (MsgEvent_RunScript(&this->actor, play, this->msgEventScript, this->msgEventFunc, &this->msgScriptResumePos)) {
         // Message event script is done
 
         SubS_SetOfferMode(&this->stateFlags, SUBS_OFFER_MODE_ONSCREEN, SUBS_OFFER_MODE_MASK);

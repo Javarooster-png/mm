@@ -160,7 +160,7 @@ void EnGs_Init(Actor* thisx, PlayState* play) {
     Math_Vec3f_Copy(&this->unk_1B0[0], &gOneVec3f);
     Math_Vec3f_Copy(&this->unk_1B0[1], &gOneVec3f);
     SubS_FillCutscenesList(&this->actor, this->csIdList, ARRAY_COUNT(this->csIdList));
-    AudioVoice_InitWord(VOICE_WORD_ID_HOURS);
+    func_801A5080(VOICE_WORD_ID_HOURS);
     if (this->actor.params == ENGS_1) {
         Actor_SetScale(&this->actor, 0.15f);
         this->collider.dim.radius *= 1.5f;
@@ -1030,7 +1030,7 @@ void EnGs_Update(Actor* thisx, PlayState* play) {
     s32 pad;
     EnGs* this = THIS;
 
-    if (Actor_TalkOfferAccepted(&this->actor, &play->state)) {
+    if (Actor_ProcessTalkRequest(&this->actor, &play->state)) {
         play->msgCtx.msgMode = MSGMODE_NONE;
         play->msgCtx.msgLength = 0;
         this->collider.base.acFlags &= ~AC_HIT;

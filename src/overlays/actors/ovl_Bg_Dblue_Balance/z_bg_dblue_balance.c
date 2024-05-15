@@ -6,6 +6,7 @@
 
 #include "z_bg_dblue_balance.h"
 #include "objects/object_dblue_object/object_dblue_object.h"
+#include "prevent_bss_reordering.h"
 
 #define FLAGS 0x00000000
 
@@ -294,7 +295,7 @@ void func_80B8296C(PlayState* play, Vec3f* arg1, f32 arg2) {
     }
 }
 
-bool func_80B82B00(s16 arg0, s16 arg1, s16 arg2) {
+s32 func_80B82B00(s16 arg0, s16 arg1, s16 arg2) {
     if (arg0 < arg1) {
         return (arg0 < arg2 && arg1 >= arg2);
     }

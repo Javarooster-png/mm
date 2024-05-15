@@ -208,7 +208,7 @@ void Fault_RemoveAddrConvClient(FaultAddrConvClient* client) {
     FaultAddrConvClient* iter = sFaultInstance->addrConvClients;
     FaultAddrConvClient* lastIter = NULL;
     OSIntMask mask;
-    s32 listIsEmpty = false;
+    bool listIsEmpty = false;
 
     mask = osSetIntMask(1);
 

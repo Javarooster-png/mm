@@ -123,7 +123,7 @@ static Vec3f sShopItemPositions[3] = {
     { 31.0f, 35.0f, -95.0f },
 };
 
-bool EnFsn_TestItemSelected(PlayState* play) {
+s32 EnFsn_TestItemSelected(PlayState* play) {
     MessageContext* msgCtx = &play->msgCtx;
 
     if ((msgCtx->textboxEndType == TEXTBOX_ENDTYPE_10) || (msgCtx->textboxEndType == TEXTBOX_ENDTYPE_11)) {
@@ -223,7 +223,7 @@ void EnFsn_HandleConversationBackroom(EnFsn* this, PlayState* play) {
 void EnFsn_HandleSetupResumeInteraction(EnFsn* this, PlayState* play) {
     if ((Message_GetState(&play->msgCtx) == TEXT_STATE_DONE) && Message_ShouldAdvance(play) &&
         (this->cutsceneState == ENFSN_CUTSCENESTATE_STOPPED)) {
-        Actor_TalkOfferAccepted(&this->actor, &play->state);
+        Actor_ProcessTalkRequest(&this->actor, &play->state);
         Actor_OfferTalkExchangeEquiCylinder(&this->actor, play, 400.0f, PLAYER_IA_MINUS1);
         if (ENFSN_IS_SHOP(&this->actor)) {
             this->actor.textId = 0;
@@ -409,7 +409,7 @@ void EnFsn_EndInteraction(EnFsn* this, PlayState* play) {
         CutsceneManager_Stop(this->csId);
         this->cutsceneState = ENFSN_CUTSCENESTATE_STOPPED;
     }
-    Actor_TalkOfferAccepted(&this->actor, &play->state);
+    Actor_ProcessTalkRequest(&this->actor, &play->state);
     play->msgCtx.msgMode = MSGMODE_TEXT_CLOSING;
     play->msgCtx.stateTimer = 4;
     Interface_SetHudVisibility(HUD_VISIBILITY_ALL);
@@ -759,7 +759,7 @@ void EnFsn_Idle(EnFsn* this, PlayState* play) {
         return;
     }
 
-    if (Actor_TalkOfferAccepted(&this->actor, &play->state)) {
+    if (Actor_ProcessTalkRequest(&this->actor, &play->state)) {
         if (this->cutsceneState == ENFSN_CUTSCENESTATE_STOPPED) {
             if (CutsceneManager_GetCurrentCsId() == CS_ID_GLOBAL_TALK) {
                 CutsceneManager_Stop(CS_ID_GLOBAL_TALK);
@@ -825,7 +825,7 @@ void EnFsn_BeginInteraction(EnFsn* this, PlayState* play) {
             CutsceneManager_StartWithPlayerCsAndSetFlag(this->csId, &this->actor);
             this->cutsceneState = ENFSN_CUTSCENESTATE_PLAYING;
             if (Player_GetMask(play) == PLAYER_MASK_NONE) {
-                func_8011552C(play, DO_ACTION_NEXT);
+                Interface_SetAButtonDoAction(play, DO_ACTION_NEXT);
                 if (EnFsn_HasItemsToSell()) {
                     this->actionFunc = EnFsn_AskBuyOrSell;
                 } else {
@@ -916,7 +916,7 @@ void EnFsn_AskBuyOrSell(EnFsn* this, PlayState* play) {
             }
         }
     } else if (talkState == TEXT_STATE_CHOICE) {
-        func_8011552C(play, DO_ACTION_DECIDE);
+        Interface_SetAButtonDoAction(play, DO_ACTION_DECIDE);
         if (!EnFsn_TestEndInteraction(this, play, CONTROLLER1(&play->state)) && Message_ShouldAdvance(play)) {
             switch (play->msgCtx.choiceIndex) {
                 case 0:
@@ -946,7 +946,7 @@ void EnFsn_AskBuyOrSell(EnFsn* this, PlayState* play) {
 }
 
 void EnFsn_SetupDeterminePrice(EnFsn* this, PlayState* play) {
-    if (Actor_TalkOfferAccepted(&this->actor, &play->state)) {
+    if (Actor_ProcessTalkRequest(&this->actor, &play->state)) {
         this->actor.textId = 0xFF;
         Message_StartTextbox(play, this->actor.textId, &this->actor);
         this->actionFunc = EnFsn_DeterminePrice;
@@ -1066,7 +1066,7 @@ void EnFsn_SetupResumeInteraction(EnFsn* this, PlayState* play) {
 }
 
 void EnFsn_ResumeInteraction(EnFsn* this, PlayState* play) {
-    if (Actor_TalkOfferAccepted(&this->actor, &play->state)) {
+    if (Actor_ProcessTalkRequest(&this->actor, &play->state)) {
         if (ENFSN_IS_SHOP(&this->actor)) {
             if (!this->isSelling) {
                 this->csId = this->lookToShopkeeperBuyingCsId;
@@ -1100,7 +1100,7 @@ void EnFsn_ResumeShoppingInteraction(EnFsn* this, PlayState* play) {
             } else if (this->actor.textId != 0x29D6) {
                 this->actionFunc = EnFsn_AskCanBuyAterRunningOutOfItems;
             } else {
-                func_8011552C(play, DO_ACTION_DECIDE);
+                Interface_SetAButtonDoAction(play, DO_ACTION_DECIDE);
                 this->stickLeftPrompt.isEnabled = false;
                 this->stickRightPrompt.isEnabled = true;
                 this->actionFunc = EnFsn_FaceShopkeeperSelling;
@@ -1151,7 +1151,7 @@ void EnFsn_BrowseShelf(EnFsn* this, PlayState* play) {
         this->stickLeftPrompt.isEnabled = true;
         EnFsn_UpdateCursorPos(this, play);
         if (talkstate == TEXT_STATE_5) {
-            func_8011552C(play, DO_ACTION_DECIDE);
+            Interface_SetAButtonDoAction(play, DO_ACTION_DECIDE);
             if (!EnFsn_HasPlayerSelectedItem(this, play, CONTROLLER1(&play->state))) {
                 EnFsn_CursorLeftRight(this);
                 if (this->cursorIndex != prevCursorIdx) {
@@ -1259,7 +1259,7 @@ void EnFsn_SelectItem(EnFsn* this, PlayState* play) {
     u8 talkState = Message_GetState(&play->msgCtx);
 
     if (EnFsn_TakeItemOffShelf(this) && (talkState == TEXT_STATE_CHOICE)) {
-        func_8011552C(play, DO_ACTION_DECIDE);
+        Interface_SetAButtonDoAction(play, DO_ACTION_DECIDE);
         if (!EnFsn_TestCancelOption(this, play, CONTROLLER1(&play->state)) && Message_ShouldAdvance(play)) {
             switch (play->msgCtx.choiceIndex) {
                 case 0:
@@ -1392,7 +1392,7 @@ void EnFsn_FaceShopkeeperSelling(EnFsn* this, PlayState* play) {
     u8 cursorIndex;
 
     if (talkState == TEXT_STATE_CHOICE) {
-        func_8011552C(play, DO_ACTION_DECIDE);
+        Interface_SetAButtonDoAction(play, DO_ACTION_DECIDE);
         if (!EnFsn_TestEndInteraction(this, play, CONTROLLER1(&play->state)) &&
             (!Message_ShouldAdvance(play) || !EnFsn_FacingShopkeeperDialogResult(this, play)) &&
             this->stickAccumX > 0) {
@@ -1400,7 +1400,7 @@ void EnFsn_FaceShopkeeperSelling(EnFsn* this, PlayState* play) {
             if (cursorIndex != CURSOR_INVALID) {
                 this->cursorIndex = cursorIndex;
                 this->actionFunc = EnFsn_LookToShelf;
-                func_8011552C(play, DO_ACTION_DECIDE);
+                Interface_SetAButtonDoAction(play, DO_ACTION_DECIDE);
                 this->stickRightPrompt.isEnabled = false;
                 Audio_PlaySfx(NA_SE_SY_CURSOR);
             }
@@ -1420,7 +1420,7 @@ void EnFsn_SetupEndInteractionImmediately(EnFsn* this, PlayState* play) {
 }
 
 void EnFsn_IdleBackroom(EnFsn* this, PlayState* play) {
-    if (Actor_TalkOfferAccepted(&this->actor, &play->state)) {
+    if (Actor_ProcessTalkRequest(&this->actor, &play->state)) {
         this->textId = 0;
         EnFsn_HandleConversationBackroom(this, play);
         this->actionFunc = EnFsn_ConverseBackroom;

@@ -295,7 +295,7 @@ void func_80BCB4DC(EnScopenuts* this, PlayState* play) {
 void func_80BCB52C(EnScopenuts* this, PlayState* play) {
     Math_SmoothStepToS(&this->actor.shape.rot.y, this->actor.yawTowardsPlayer, 3, 2000, 0);
     this->actor.world.rot.y = this->actor.shape.rot.y;
-    if (Actor_TalkOfferAccepted(&this->actor, &play->state)) {
+    if (Actor_ProcessTalkRequest(&this->actor, &play->state)) {
         this->unk_33C = func_80BCAF0C(this);
         Message_StartTextbox(play, this->unk_33C, &this->actor);
         this->actionFunc = func_80BCB6D0;
@@ -376,7 +376,7 @@ void func_80BCB90C(EnScopenuts* this, PlayState* play) {
 }
 
 void func_80BCB980(EnScopenuts* this, PlayState* play) {
-    if (Actor_TalkOfferAccepted(&this->actor, &play->state)) {
+    if (Actor_ProcessTalkRequest(&this->actor, &play->state)) {
         this->unk_33C = 0x1637;
         this->unk_328 |= 1;
         Message_StartTextbox(play, this->unk_33C, &this->actor);
@@ -654,7 +654,7 @@ s32 func_80BCC2AC(EnScopenuts* this, Path* path, s32 arg2_) {
         phi_f14 = sp5C[arg2 + 1].z - sp5C[arg2 - 1].z;
     }
 
-    func_8017B7F8(&sp30, RAD_TO_BINANG(Math_FAtan2F(phi_f12, phi_f14)), &sp44, &sp40, &sp3C);
+    Math3D_RotateXZPlane(&sp30, RAD_TO_BINANG(Math_FAtan2F(phi_f12, phi_f14)), &sp44, &sp40, &sp3C);
 
     if (((this->actor.world.pos.x * sp44) + (sp40 * this->actor.world.pos.z) + sp3C) > 0.0f) {
         sp50 = true;

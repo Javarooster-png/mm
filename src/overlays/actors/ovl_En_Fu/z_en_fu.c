@@ -40,7 +40,7 @@ void func_80963540(EnFu* this);
 void func_80963560(EnFu* this, PlayState* play);
 void func_80963610(EnFu* this);
 void func_80963630(EnFu* this, PlayState* play);
-s32 EnFu_MovePlayerToPos(PlayState* play, Vec3f targetPos);
+s32 func_80963810(PlayState* play, Vec3f pos);
 s32 func_809638F8(PlayState* play);
 void func_809639D0(EnFu* this, PlayState* play);
 void func_80963DE4(EnFu* this, PlayState* play);
@@ -400,7 +400,7 @@ void func_80962340(EnFu* this, PlayState* play) {
         this->actor.flags |= ACTOR_FLAG_10000;
     }
 
-    if (Actor_TalkOfferAccepted(&this->actor, &play->state)) {
+    if (Actor_ProcessTalkRequest(&this->actor, &play->state)) {
         if (this->unk_54A == 2) {
             if (this->unk_552 == 0x287D) {
                 if (GET_PLAYER_FORM == PLAYER_FORM_DEKU) {
@@ -839,7 +839,7 @@ void func_80963258(EnFu* this) {
 
 void func_8096326C(EnFu* this, PlayState* play) {
     func_80963FF8(this, play);
-    if (EnFu_MovePlayerToPos(play, this->actor.world.pos)) {
+    if (func_80963810(play, this->actor.world.pos)) {
         func_809622FC(this);
     }
 }
@@ -889,7 +889,7 @@ void func_80963350(EnFu* this, PlayState* play) {
         D_80964C24 = 0;
         fuKaiten->bounce = 0;
         func_80963F88(this, play);
-        play->actorCtx.isOverrideInputOn = true;
+        play->actorCtx.unk268 = 1;
         func_80963258(this);
     }
 }
@@ -919,7 +919,7 @@ void func_80963610(EnFu* this) {
 void func_80963630(EnFu* this, PlayState* play) {
     Player* player = GET_PLAYER(play);
 
-    if (Actor_TalkOfferAccepted(&this->actor, &play->state)) {
+    if (Actor_ProcessTalkRequest(&this->actor, &play->state)) {
         if (CHECK_WEEKEVENTREG(WEEKEVENTREG_22_10) && CHECK_WEEKEVENTREG(WEEKEVENTREG_22_20) && (CURRENT_DAY == 3) &&
             (GET_PLAYER_FORM == PLAYER_FORM_HUMAN)) {
             if (CHECK_WEEKEVENTREG(WEEKEVENTREG_22_40)) {
@@ -967,27 +967,27 @@ void func_80963630(EnFu* this, PlayState* play) {
     }
 }
 
-s32 EnFu_MovePlayerToPos(PlayState* play, Vec3f targetPos) {
+s32 func_80963810(PlayState* play, Vec3f pos) {
     Player* player = GET_PLAYER(play);
-    f32 distXZ;
-    f32 controlStickMagnitude;
-    s16 controlStickAngle;
+    f32 sp28;
+    f32 phi_f0;
+    s16 sp22;
 
-    controlStickAngle = Math_Vec3f_Yaw(&player->actor.world.pos, &targetPos);
-    distXZ = Math_Vec3f_DistXZ(&player->actor.world.pos, &targetPos);
+    sp22 = Math_Vec3f_Yaw(&player->actor.world.pos, &pos);
+    sp28 = Math_Vec3f_DistXZ(&player->actor.world.pos, &pos);
 
-    if (distXZ < 80.0f) {
-        controlStickMagnitude = 10.0f;
-    } else if (distXZ < 90.0f) {
-        controlStickMagnitude = 40.0f;
+    if (sp28 < 80.0f) {
+        phi_f0 = 10.0f;
+    } else if (sp28 < 90.0f) {
+        phi_f0 = 40.0f;
     } else {
-        controlStickMagnitude = 80.0f;
+        phi_f0 = 80.0f;
     }
 
-    play->actorCtx.isOverrideInputOn = true;
-    Actor_SetControlStickData(play, &play->actorCtx.overrideInput, controlStickMagnitude, controlStickAngle);
+    play->actorCtx.unk268 = 1;
+    func_800B6F20(play, &play->actorCtx.unk_26C, phi_f0, sp22);
 
-    if (distXZ < 80.0f) {
+    if (sp28 < 80.0f) {
         return true;
     }
     return false;
@@ -1209,10 +1209,10 @@ void func_80963FF8(EnFu* this, PlayState* play) {
     Player* player = GET_PLAYER(play);
 
     if (player->stateFlags1 & PLAYER_STATE1_100000) {
-        play->actorCtx.isOverrideInputOn = true;
-        play->actorCtx.overrideInput.press.button = BTN_A;
+        play->actorCtx.unk268 = 1;
+        play->actorCtx.unk_26C.press.button = BTN_A;
     } else {
-        play->actorCtx.isOverrideInputOn = true;
+        play->actorCtx.unk268 = 1;
     }
 }
 

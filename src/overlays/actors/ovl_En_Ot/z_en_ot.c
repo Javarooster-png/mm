@@ -534,7 +534,7 @@ void func_80B5C6DC(EnOt* this, PlayState* play) {
     if (CHECK_WEEKEVENTREG(WEEKEVENTREG_84_10) && (this->type == SEAHORSE_TYPE_1)) {
         this->actor.textId = 0;
         this->unk_384 = 1;
-        if (Actor_TalkOfferAccepted(&this->actor, &play->state)) {
+        if (Actor_ProcessTalkRequest(&this->actor, &play->state)) {
             this->unk_3A0 = BINANG_ADD(sp3E, 0x4000);
             this->unk_360->unk_3A0 = this->unk_3A0;
             func_80B5C9A8(this, play);
@@ -616,7 +616,7 @@ void func_80B5CBA0(EnOt* this, PlayState* play) {
 }
 
 void func_80B5CBEC(EnOt* this, PlayState* play) {
-    if (Actor_TalkOfferAccepted(&this->actor, &play->state)) {
+    if (Actor_ProcessTalkRequest(&this->actor, &play->state)) {
         this->actor.flags &= ~ACTOR_FLAG_10000;
         func_80B5CC88(this, play);
     } else {
@@ -694,7 +694,7 @@ void func_80B5CEC8(EnOt* this, PlayState* play) {
     s32 pad;
 
     this->actor.textId = 0;
-    if (Actor_TalkOfferAccepted(&this->actor, &play->state)) {
+    if (Actor_ProcessTalkRequest(&this->actor, &play->state)) {
         func_80B5D114(this, play);
         return;
     }
@@ -867,7 +867,7 @@ s32 EnOt_ActorPathing_UpdateActorInfo(PlayState* play, ActorPathing* actorPath) 
     sp44.y = actorPath->curPoint.y - actorPath->prevPoint.y;
     sp44.z = actorPath->curPoint.z - actorPath->prevPoint.z;
 
-    temp = Math3D_Parallel(&sp50, &sp44);
+    temp = Math3D_Cos(&sp50, &sp44);
     if ((actorPath->distSqToCurPointXZ < SQ(thisx->speed)) || (temp <= 0.0f)) {
         ret = true;
     } else {

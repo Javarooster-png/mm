@@ -121,10 +121,10 @@ Gfx* SubS_DrawTransformFlex(PlayState* play, void** skeleton, Vec3s* jointTable,
     gSPSegment(gfx++, 0x0D, mtx);
     Matrix_Push();
     rootLimb = Lib_SegmentedToVirtual(skeleton[0]);
-    pos.x = jointTable[LIMB_ROOT_POS].x;
-    pos.y = jointTable[LIMB_ROOT_POS].y;
-    pos.z = jointTable[LIMB_ROOT_POS].z;
-    rot = jointTable[LIMB_ROOT_ROT];
+    pos.x = jointTable->x;
+    pos.y = jointTable->y;
+    pos.z = jointTable->z;
+    rot = jointTable[1];
     newDlist = rootLimb->dList;
     limbDList = rootLimb->dList;
 
@@ -577,7 +577,7 @@ s32 SubS_HasReachedPoint(Actor* actor, Path* path, s32 pointIndex) {
         diffZ = points[index + 1].z - points[index - 1].z;
     }
 
-    func_8017B7F8(&point, RAD_TO_BINANG(Math_FAtan2F(diffX, diffZ)), &px, &pz, &d);
+    Math3D_RotateXZPlane(&point, RAD_TO_BINANG(Math_FAtan2F(diffX, diffZ)), &px, &pz, &d);
     if (((px * actor->world.pos.x) + (pz * actor->world.pos.z) + d) > 0.0f) {
         reached = true;
     }
@@ -963,7 +963,7 @@ void SubS_FillShadowTex(s32 startCol, s32 startRow, u8* tex, s32 size) {
     }
 }
 
-void SubS_GenShadowTex(Vec3f bodyPartsPos[], Vec3f* worldPos, u8* tex, f32 tween, u8 bodyPartsNum, u8 sizes[],
+void SubS_GenShadowTex(Vec3f bodyPartsPos[], Vec3f* worldPos, u8* tex, f32 weight, u8 bodyPartsNum, u8 sizes[],
                        s8 parentBodyParts[]) {
     Vec3f pos;
     Vec3f startVec;
@@ -978,9 +978,9 @@ void SubS_GenShadowTex(Vec3f bodyPartsPos[], Vec3f* worldPos, u8* tex, f32 tween
             parentBodyPart = parentBodyParts[i];
             bodyPartPos = &bodyPartsPos[i];
 
-            pos.x = (bodyPartsPos[parentBodyPart].x - bodyPartPos->x) * tween + (bodyPartPos->x - worldPos->x);
-            pos.y = (bodyPartsPos[parentBodyPart].y - bodyPartPos->y) * tween + (bodyPartPos->y - worldPos->y);
-            pos.z = (bodyPartsPos[parentBodyPart].z - bodyPartPos->z) * tween + (bodyPartPos->z - worldPos->z);
+            pos.x = (bodyPartsPos[parentBodyPart].x - bodyPartPos->x) * weight + (bodyPartPos->x - worldPos->x);
+            pos.y = (bodyPartsPos[parentBodyPart].y - bodyPartPos->y) * weight + (bodyPartPos->y - worldPos->y);
+            pos.z = (bodyPartsPos[parentBodyPart].z - bodyPartPos->z) * weight + (bodyPartPos->z - worldPos->z);
         } else {
             bodyPartPos = &bodyPartsPos[i];
 
@@ -1323,8 +1323,8 @@ void SubS_ActorPathing_ComputePointInfo(PlayState* play, ActorPathing* actorPath
     diff.x = actorPath->curPoint.x - actorPath->worldPos->x;
     diff.y = actorPath->curPoint.y - actorPath->worldPos->y;
     diff.z = actorPath->curPoint.z - actorPath->worldPos->z;
-    actorPath->distSqToCurPointXZ = Math3D_XZLengthSquared(diff.x, diff.z);
-    actorPath->distSqToCurPoint = Math3D_LengthSquared(&diff);
+    actorPath->distSqToCurPointXZ = Math3D_Dist1DSq(diff.x, diff.z);
+    actorPath->distSqToCurPoint = Math3D_Vec3fMagnitudeSq(&diff);
     actorPath->rotToCurPoint.y = Math_Atan2S_XY(diff.z, diff.x);
     actorPath->rotToCurPoint.x = Math_Atan2S_XY(sqrtf(actorPath->distSqToCurPointXZ), -diff.y);
     actorPath->rotToCurPoint.z = 0;

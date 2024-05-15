@@ -60,5 +60,6 @@
 
         <!-- Skeleton -->
         <Skeleton Name="gPoeComposerSkel" Type="Flex" LimbType="Standard" LimbNone="POE_COMPOSER_LIMB_NONE" LimbMax="POE_COMPOSER_LIMB_MAX" EnumName="PoeComposerLimb" Offset="0x9930" />
+
     </File>
 </Root>
